@@ -4,26 +4,48 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.hiebeler.loopy.common.Destinations
+import com.hiebeler.loopy.ui.composables.HomeComposable
+import com.hiebeler.loopy.ui.composables.ProfileComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
+import com.hiebeler.loopy.utils.Navigate
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             LoopyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController: NavHostController = rememberNavController()
+
+                Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = { BottomBar(navController = navController) }) { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        NavigationGraph(
+                            navController = navController
+                        )
+                    }
                 }
             }
         }
@@ -31,17 +53,45 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun NavigationGraph(navController: NavHostController) {
+    NavHost(navController,
+        startDestination = Destinations.HomeScreen.route,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None }) {
+        composable(Destinations.HomeScreen.route) {
+            HomeComposable(navController = navController)
+        }
+        composable(Destinations.OwnProfileScreen.route) {
+            ProfileComposable(navController = navController)
+        }
+    }
 }
 
-@Preview(showBackground = true)
+
 @Composable
-fun GreetingPreview() {
-    LoopyTheme {
-        Greeting("Android")
+fun BottomBar(navController: NavHostController) {
+    val screens = listOf(
+        Destinations.HomeScreen,
+        Destinations.OwnProfileScreen,
+    )
+
+    NavigationBar {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
+
+        screens.forEach { screen ->
+
+            NavigationBarItem(icon = {
+                Icon(imageVector = screen.icon!!, contentDescription = "")
+            }, label = {
+                Text(
+                    text = stringResource(id = screen.label),
+                    maxLines = 1,
+                    overflow = TextOverflow.Visible
+                )
+            }, selected = currentRoute == screen.route, onClick = {
+                Navigate.navigateWithPopUp(screen.route, navController)
+            })
+        }
     }
 }
