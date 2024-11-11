@@ -54,7 +54,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -70,9 +70,19 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.retrofit)
+
+    implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.androidx.datastore)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.androidx.hilt.work)
+
+    implementation(libs.hilt.naviation)
+    implementation(libs.dagger.hilt)
 
     implementation(libs.androidx.navigation.compose)
 }
