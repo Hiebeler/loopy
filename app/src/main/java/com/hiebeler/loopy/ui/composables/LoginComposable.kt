@@ -45,7 +45,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hiebeler.loopy.R
+import com.hiebeler.loopy.utils.Navigate
+import com.hiebeler.loopy.utils.imeAwareInsets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -78,71 +81,102 @@ fun LoginComposable(
             } else {
                 Spacer(modifier = Modifier.weight(1f))
                 Column(Modifier.padding(12.dp)) {
-                    Row(verticalAlignment = Alignment.Bottom) {
-                        OutlinedTextField(
-                            value = viewModel.customUrl,
-                            onValueChange = {
-                                viewModel.customUrl = it
-                                viewModel.domainChanged()
-                            },
-                            modifier = Modifier.weight(1f),
-                            prefix = { Text("https://") },
-                            singleLine = true,
-                            label = { Text(stringResource(R.string.home)) },
-                            shape = RoundedCornerShape(12.dp),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                            keyboardActions = KeyboardActions(onDone = {
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                                CoroutineScope(Dispatchers.Default).launch {
-                                    viewModel.login(viewModel.customUrl, context)
-                                }
-                            })
-                        )
-                        Spacer(Modifier.width(12.dp))
-                        if (viewModel.loading) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                                    .height(56.dp)
-                                    .width(56.dp)
-                                    .padding(0.dp, 0.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(MaterialTheme.colorScheme.primary)
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = viewModel.customUrl,
+                        onValueChange = {
+                            viewModel.customUrl = it
+                            viewModel.domainChanged()
+                        },
+                        prefix = { Text("https://") },
+                        singleLine = true,
+                        label = { Text(stringResource(R.string.server_url)) },
+                        shape = RoundedCornerShape(12.dp),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            CoroutineScope(Dispatchers.Default).launch {
+                                viewModel.login(viewModel.customUrl, "", "")
+                            }
+                        })
+                    )
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = viewModel.email,
+                        onValueChange = {
+                            viewModel.email = it
+                            viewModel.emailChanged()
+                        },
+                        prefix = { Text("https://") },
+                        singleLine = true,
+                        label = { Text(stringResource(R.string.email)) },
+                        shape = RoundedCornerShape(12.dp),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            CoroutineScope(Dispatchers.Default).launch {
+                                viewModel.login(viewModel.customUrl, "", "")
+                            }
+                        })
+                    )
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = viewModel.password,
+                        onValueChange = {
+                            viewModel.password = it
+                        },
+                        prefix = { Text("https://") },
+                        singleLine = true,
+                        label = { Text(stringResource(R.string.password)) },
+                        shape = RoundedCornerShape(12.dp),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            CoroutineScope(Dispatchers.Default).launch {
+                                viewModel.login(viewModel.customUrl, "", "")
+                            }
+                        })
+                    )
+                    Spacer(Modifier.height(24.dp))
+                    if (viewModel.loading) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .height(56.dp)
+                                .fillMaxWidth()
+                                .padding(0.dp, 0.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.primary)
 
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(24.dp),
-                                    color = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
-                        } else {
-                            Button(
-                                onClick = {
-                                    CoroutineScope(Dispatchers.Default).launch {
-                                        viewModel.login(viewModel.customUrl, context)
-                                    }
-                                },
-                                Modifier
-                                    .height(56.dp)
-                                    .width(56.dp)
-                                    .padding(0.dp, 0.dp),
-                                shape = RoundedCornerShape(12.dp),
-                                contentPadding = PaddingValues(12.dp),
-                                enabled = viewModel.isValidUrl,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                )
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                    contentDescription = "submit",
-                                    Modifier
-                                        .fillMaxSize()
-                                        .fillMaxWidth()
-                                )
-                            }
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    } else {
+                        Button(
+                            onClick = {
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    viewModel.login(viewModel.customUrl, "context", "")
+                                }
+                            },
+                            Modifier
+                                .height(56.dp)
+                                .fillMaxWidth()
+                                .padding(0.dp, 0.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            contentPadding = PaddingValues(12.dp),
+                            enabled = viewModel.isValidUrl && viewModel.isValidEmail,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) {
+                            Text(text = "Sign in")
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dp))
@@ -165,12 +199,12 @@ fun LoginComposable(
                             Row(
                                 modifier = Modifier.align(Alignment.CenterStart)
                             ) {
-                                Icon(
+                                /*Icon(
                                     imageVector = Icons.Outlined.PersonAdd,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onPrimary,
                                     modifier = Modifier.size(24.dp)
-                                )
+                                )*/
                             }
                             Text(
                                 modifier = Modifier.align(Alignment.Center),

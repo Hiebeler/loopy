@@ -1,7 +1,7 @@
 package com.hiebeler.loopy.data.repository
 
-import LoopsApi
 import com.hiebeler.loopy.common.Resource
+import com.hiebeler.loopy.data.remote.LoopsApi
 import com.hiebeler.loopy.data.remote.dto.AccountDto
 import com.hiebeler.loopy.domain.model.Account
 import com.hiebeler.loopy.domain.repository.AccountRepository

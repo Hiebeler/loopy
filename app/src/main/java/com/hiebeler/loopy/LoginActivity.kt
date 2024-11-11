@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import com.hiebeler.loopy.ui.composables.LoginComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -23,29 +24,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var obtainTokenUseCase: ObtainTokenUseCase
-
-    @Inject
-    lateinit var verifyTokenUseCase: VerifyTokenUseCase
-
-    @Inject
-    lateinit var updateLoginDataUseCase: UpdateLoginDataUseCase
-
-    @Inject
-    lateinit var finishLoginUseCase: FinishLoginUseCase
-
-    @Inject
-    lateinit var newLoginDataUseCase: AddNewLoginUseCase
-
-
-    @Inject
-    lateinit var getOngoingLoginUseCase: GetOngoingLoginUseCase
-
-    @Inject
-    lateinit var hostSelectionInterceptorInterface: HostSelectionInterceptorInterface
-
 
     private var isLoadingAfterRedirect: Boolean by mutableStateOf(false)
     private var error: String by mutableStateOf("")
@@ -76,10 +54,10 @@ class LoginActivity : ComponentActivity() {
             val baseUrl = extras.getString("base_url")
             val accessToken = extras.getString("access_token")
             if (baseUrl != null && accessToken != null) {
-                hostSelectionInterceptorInterface.setHost(baseUrl)
-                hostSelectionInterceptorInterface.setToken(accessToken)
+                //hostSelectionInterceptorInterface.setHost(baseUrl)
+                //hostSelectionInterceptorInterface.setToken(accessToken)
                 CoroutineScope(Dispatchers.Default).launch {
-                    verifyToken(LoginData(baseUrl = baseUrl, accessToken = accessToken), true)
+                 //   verifyToken(LoginData(baseUrl = baseUrl, accessToken = accessToken), true)
                 }
             }
         }
@@ -96,12 +74,13 @@ class LoginActivity : ComponentActivity() {
 
             isLoadingAfterRedirect = true
             CoroutineScope(Dispatchers.Default).launch {
-                getTokenAndRedirect(code)
+               // getTokenAndRedirect(code)
             }
         }
     }
 
-    private suspend fun getTokenAndRedirect(code: String) {
+   /* private suspend fun getTokenAndRedirect(code: String) {
+
         val loginData: LoginData? = getOngoingLoginUseCase()
         if (loginData == null) {
             error = "an unexpected error occured"
@@ -164,7 +143,7 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
-
+*/
     private fun redirect() {
         val intent = Intent(applicationContext, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

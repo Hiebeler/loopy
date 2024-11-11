@@ -1,16 +1,23 @@
 package com.hiebeler.loopy.di
 
-import LoopsApi
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.HostSelectionInterceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+
+private val Context.dataStore by preferencesDataStore("settings")
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -50,8 +57,8 @@ class Module {
     ).client(client).baseUrl("https://err.or/").build()
 
 
-    @Provides
+    /*@Provides
     @Singleton
     fun providePixelfedApi(retrofit: Retrofit): LoopsApi =
-        retrofit.create(LoopsApi::class.java)
+        retrofit.create(LoopsApi::class.java)*/
 }

@@ -1,5 +1,7 @@
 package com.hiebeler.loopy
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,12 +32,18 @@ import com.hiebeler.loopy.ui.composables.ProfileComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
 import com.hiebeler.loopy.utils.Navigate
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        runBlocking {
+            gotoLoginActivity(this@MainActivity)
+        }
+
         setContent {
             LoopyTheme {
                 val navController: NavHostController = rememberNavController()
@@ -50,6 +58,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+fun gotoLoginActivity(context: Context) {
+    val intent = Intent(context, LoginActivity::class.java)
+    context.startActivity(intent)
 }
 
 @Composable

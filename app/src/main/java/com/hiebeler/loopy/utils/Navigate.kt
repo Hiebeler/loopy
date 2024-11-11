@@ -3,6 +3,7 @@ package com.hiebeler.loopy.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 
@@ -57,10 +58,10 @@ object Navigate {
         }
     }
 
-    /*fun openUrlInApp(context: Context, url: String) {
+    fun openUrlInApp(context: Context, url: String) {
         val intent = CustomTabsIntent.Builder().build()
         intent.launchUrl(context, Uri.parse(url))
-    }*/
+    }
 
     fun openUrlInBrowser(context: Context, url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
