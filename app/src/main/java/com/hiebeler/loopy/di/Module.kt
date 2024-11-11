@@ -2,9 +2,16 @@ package com.hiebeler.loopy.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
+import com.hiebeler.loopy.data.remote.LoopsApi
+import com.hiebeler.loopy.data.repository.AuthRepositoryImpl
+import com.hiebeler.loopy.domain.model.AuthData
+import com.hiebeler.loopy.domain.repository.AuthRepository
+import com.hiebeler.loopy.utils.AuthDataSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,6 +38,12 @@ class Module {
         return applicationContext.dataStore
     }
 
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        dataStore: DataStore<AuthData>,
+        loopsApi: LoopsApi
+    ): AuthRepository = AuthRepositoryImpl(dataStore, loopsApi)
 
     @Provides
     @Singleton
@@ -57,8 +70,14 @@ class Module {
     ).client(client).baseUrl("https://err.or/").build()
 
 
-    /*@Provides
+    @Provides
     @Singleton
-    fun providePixelfedApi(retrofit: Retrofit): LoopsApi =
-        retrofit.create(LoopsApi::class.java)*/
+    fun provideLoopsApi(retrofit: Retrofit): LoopsApi =
+        retrofit.create(LoopsApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAuthDataStore(@ApplicationContext context: Context): DataStore<AuthData> =
+        DataStoreFactory.create(serializer = AuthDataSerializer(),
+            produceFile = { context.dataStoreFile("auth_data_datastore.json") })
 }

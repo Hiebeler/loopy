@@ -1,17 +1,21 @@
 package com.hiebeler.loopy.ui.composables
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.usecases.LoginUseCase
+import com.hiebeler.loopy.ui.composables.login.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-   // private val loginUseCase: LoginUseCase
+   private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     private val domainRegex: Regex =
@@ -22,6 +26,8 @@ class LoginViewModel @Inject constructor(
     var customUrl: String by mutableStateOf("")
     var email: String by mutableStateOf("")
     var password: String by mutableStateOf("")
+
+    var loginState by mutableStateOf(LoginState())
 
     var isValidUrl: Boolean by mutableStateOf(false)
     var isValidEmail: Boolean by mutableStateOf(false)
@@ -45,10 +51,24 @@ class LoginViewModel @Inject constructor(
         isValidEmail = emailRegex.matches(email)
     }
 
-    suspend fun login(baseUrl: String,email: String, password: String) {
+    suspend fun login() {
         loading = true
-        if (domainRegex.matches(baseUrl) && emailRegex.matches(email)) {
+        if (domainRegex.matches(customUrl) && emailRegex.matches(email)) {
+            loginUseCase(customUrl, email, password).onEach { result ->
+                loginState = when (result) {
+                    is Resource.Success -> {
+                        LoginState(success = true)
+                    }
 
+                    is Resource.Error -> {
+                        LoginState(error = result.message ?: "An error occurred")
+                    }
+
+                    is Resource.Loading -> {
+                        LoginState(isLoading = true)
+                    }
+                }
+            }.launchIn(viewModelScope)
         }
         loading = false
     }

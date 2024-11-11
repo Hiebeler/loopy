@@ -10,7 +10,7 @@ data class Account(
     val follower_count: Int,
     val following_count: Int,
     val id: String,
-    val is_blocking: Any,
+    val is_blocking: Boolean,
     val is_owner: Boolean,
     val name: String,
     val post_count: Int,

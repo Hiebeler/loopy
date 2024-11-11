@@ -1,30 +1,22 @@
 package com.hiebeler.loopy.ui.composables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -33,14 +25,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -96,9 +84,6 @@ fun LoginComposable(
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
                             focusManager.clearFocus()
-                            CoroutineScope(Dispatchers.Default).launch {
-                                viewModel.login(viewModel.customUrl, "", "")
-                            }
                         })
                     )
                     OutlinedTextField(
@@ -108,7 +93,6 @@ fun LoginComposable(
                             viewModel.email = it
                             viewModel.emailChanged()
                         },
-                        prefix = { Text("https://") },
                         singleLine = true,
                         label = { Text(stringResource(R.string.email)) },
                         shape = RoundedCornerShape(12.dp),
@@ -116,9 +100,6 @@ fun LoginComposable(
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
                             focusManager.clearFocus()
-                            CoroutineScope(Dispatchers.Default).launch {
-                                viewModel.login(viewModel.customUrl, "", "")
-                            }
                         })
                     )
                     OutlinedTextField(
@@ -127,7 +108,6 @@ fun LoginComposable(
                         onValueChange = {
                             viewModel.password = it
                         },
-                        prefix = { Text("https://") },
                         singleLine = true,
                         label = { Text(stringResource(R.string.password)) },
                         shape = RoundedCornerShape(12.dp),
@@ -136,7 +116,7 @@ fun LoginComposable(
                             keyboardController?.hide()
                             focusManager.clearFocus()
                             CoroutineScope(Dispatchers.Default).launch {
-                                viewModel.login(viewModel.customUrl, "", "")
+                                viewModel.login()
                             }
                         })
                     )
@@ -161,7 +141,7 @@ fun LoginComposable(
                         Button(
                             onClick = {
                                 CoroutineScope(Dispatchers.Default).launch {
-                                    viewModel.login(viewModel.customUrl, "context", "")
+                                    viewModel.login()
                                 }
                             },
                             Modifier
@@ -182,7 +162,7 @@ fun LoginComposable(
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(
                         onClick = {
-                            val url = "https://pixelfed.org/servers"
+                            val url = "https://loops.video/"
                             Navigate.openUrlInApp(context, url)
                         },
                         shape = RoundedCornerShape(12.dp),
@@ -196,16 +176,6 @@ fun LoginComposable(
                         Box(
                             modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
                         ) {
-                            Row(
-                                modifier = Modifier.align(Alignment.CenterStart)
-                            ) {
-                                /*Icon(
-                                    imageVector = Icons.Outlined.PersonAdd,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.size(24.dp)
-                                )*/
-                            }
                             Text(
                                 modifier = Modifier.align(Alignment.Center),
                                 text = stringResource(id = R.string.i_don_t_have_an_account),
