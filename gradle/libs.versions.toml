@@ -10,7 +10,7 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.10.01"
 kspVersion = "2.0.21-1.0.27"
-kotlinSerialization = "2.0.0"
+workRuntimeKtx = "2.9.1"
 kotlinxSerializationJson = "1.5.1"
 navigationCompose = "2.8.3"
 retrofit = "2.9.0"
@@ -41,6 +41,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferences" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltAndroid" }
 hilt-naviation = "androidx.hilt:hilt-navigation-compose:1.2.0"
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
