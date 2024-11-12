@@ -75,12 +75,18 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    implementation(libs.squircle.shape)
+
+    implementation(libs.accompanist.systemuicontroller)
+
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.datastore)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.coil.compose)
 
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
