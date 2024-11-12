@@ -58,18 +58,18 @@ fun HomeComposable(
     })
     Scaffold { padding ->
         Box(modifier = Modifier.padding(padding)) {
-            VerticalPager(state = pagerState) { pageIndex: Int ->
-                if (viewModel.feedState.isLoading) {
+            VerticalPager(state = pagerState, beyondViewportPageCount = 1) { pageIndex: Int ->
+                if (viewModel.feedState.isLoading || viewModel.feedState.feed == null) {
                     CircularProgressIndicator()
                 } else {
-                    if (pageIndex >= viewModel.feedState.feed.size - 2 && viewModel.feedState.feed.isNotEmpty()) {
+                    if (pageIndex >= viewModel.feedState.feed!!.data.size - 2 && viewModel.feedState.feed!!.data.isNotEmpty()) {
                         LaunchedEffect(pageIndex) {
-                            viewModel.loadMorePosts(viewModel.feedState.feed.last().id)
+                            viewModel.loadMorePosts(viewModel.feedState.feed!!.meta.nextCursor)
                         }
                     }
                     var item: Post? = null
-                    if (pageIndex < viewModel.feedState.feed.size) {
-                        item = viewModel.feedState.feed[pageIndex]
+                    if (pageIndex < viewModel.feedState.feed!!.data.size) {
+                        item = viewModel.feedState.feed!!.data[pageIndex]
                     } else {
                         Box(modifier = Modifier.fillMaxSize()) {
                             CircularProgressIndicator()
