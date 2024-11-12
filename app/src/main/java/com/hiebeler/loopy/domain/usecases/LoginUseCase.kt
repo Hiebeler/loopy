@@ -9,6 +9,7 @@ import com.hiebeler.loopy.domain.repository.UserRepository
 import com.hiebeler.loopy.ui.composables.login.LoginState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.net.URL
 
 class LoginUseCase(
     private val authRepository: AuthRepository,
@@ -39,7 +40,7 @@ class LoginUseCase(
                                 displayName = userData.name,
                                 avatar = userData.avatar,
                                 accessToken = loginModel.data.authToken,
-                                baseUrl = userData.url
+                                baseUrl = URL(userData.url).host
                             )
 
                             authRepository.finishLogin(newLoginData, userData.id)

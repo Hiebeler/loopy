@@ -1,4 +1,4 @@
-package okhttp3
+package com.hiebeler.loopy.di
 
 import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import okhttp3.Interceptor

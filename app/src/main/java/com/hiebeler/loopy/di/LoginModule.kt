@@ -8,7 +8,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.HostSelectionInterceptor
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
