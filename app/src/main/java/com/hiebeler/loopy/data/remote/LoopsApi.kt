@@ -12,6 +12,9 @@ interface LoopsApi {
     @GET("api/pixelfed/v2/discover/posts/trending")
     fun getAccount(@Query("range") range: String): Call<AccountDto>
 
-    @POST("/auth/start?device_name=Third Party Android Client&build=4")
+    @GET("api/v0/user/self")
+    fun getOwnUser(): Call<AccountDto>
+
+    @POST("/auth/start?device_name=Loopy&build=4")
     fun login(@Query("email") email: String, @Query("password") password: String): Call<LoginModelDto>
 }

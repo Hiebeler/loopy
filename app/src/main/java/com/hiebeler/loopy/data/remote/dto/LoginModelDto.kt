@@ -1,7 +1,5 @@
 package com.hiebeler.loopy.data.remote.dto
 
-import com.hiebeler.loopy.domain.model.Account
-import com.hiebeler.loopy.domain.model.LoginData
 import com.hiebeler.loopy.domain.model.LoginModel
 
 data class LoginModelDto(
@@ -9,7 +7,7 @@ data class LoginModelDto(
 ) : DtoInterface<LoginModel> {
     override fun toModel(): LoginModel {
         return LoginModel(
-            authToken = auth_token
+            authToken = auth_token.substring(auth_token.indexOf('|')+1)
         )
     }
 }

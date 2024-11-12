@@ -2,6 +2,7 @@ package com.hiebeler.loopy.di
 
 import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import com.hiebeler.loopy.domain.repository.AuthRepository
+import com.hiebeler.loopy.domain.repository.UserRepository
 import com.hiebeler.loopy.domain.usecases.LoginUseCase
 import dagger.Module
 import dagger.Provides
@@ -14,10 +15,11 @@ import javax.inject.Singleton
 @Module
 class LoginModule {
 
-
     @Provides
     @Singleton
     fun provideLoginUseCase(
-        repository: AuthRepository, hostSelectionInterceptor: HostSelectionInterceptorInterface
-    ): LoginUseCase = LoginUseCase(repository, hostSelectionInterceptor)
+        repository: AuthRepository,
+        userRepository: UserRepository,
+        hostSelectionInterceptor: HostSelectionInterceptorInterface
+    ): LoginUseCase = LoginUseCase(repository, userRepository, hostSelectionInterceptor)
 }

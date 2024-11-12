@@ -9,8 +9,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import com.hiebeler.loopy.data.remote.LoopsApi
 import com.hiebeler.loopy.data.repository.AuthRepositoryImpl
+import com.hiebeler.loopy.data.repository.UserRepositoryImpl
 import com.hiebeler.loopy.domain.model.AuthData
 import com.hiebeler.loopy.domain.repository.AuthRepository
+import com.hiebeler.loopy.domain.repository.UserRepository
 import com.hiebeler.loopy.utils.AuthDataSerializer
 import dagger.Module
 import dagger.Provides
@@ -41,9 +43,14 @@ class Module {
     @Provides
     @Singleton
     fun provideAuthRepository(
-        dataStore: DataStore<AuthData>,
-        loopsApi: LoopsApi
+        dataStore: DataStore<AuthData>, loopsApi: LoopsApi
     ): AuthRepository = AuthRepositoryImpl(dataStore, loopsApi)
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        loopsApi: LoopsApi
+    ): UserRepository = UserRepositoryImpl(loopsApi)
 
     @Provides
     @Singleton
@@ -72,8 +79,7 @@ class Module {
 
     @Provides
     @Singleton
-    fun provideLoopsApi(retrofit: Retrofit): LoopsApi =
-        retrofit.create(LoopsApi::class.java)
+    fun provideLoopsApi(retrofit: Retrofit): LoopsApi = retrofit.create(LoopsApi::class.java)
 
     @Provides
     @Singleton
