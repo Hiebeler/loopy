@@ -85,4 +85,9 @@ class AuthRepositoryImpl @Inject constructor(
             authData.copy(loginDataList = authData.loginDataList.filter { loginData -> loginData.accountId != accountId })
         }
     }
+
+    override suspend fun getCurrentLoginData(): LoginData? {
+        val currentlyLoggedIn = dataStore.data.first().currentlyLoggedIn
+        return dataStore.data.first().loginDataList.find { it.accountId == currentlyLoggedIn }
+    }
 }

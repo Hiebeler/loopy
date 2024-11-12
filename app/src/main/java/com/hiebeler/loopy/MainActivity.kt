@@ -26,22 +26,46 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import com.hiebeler.loopy.common.Destinations
+import com.hiebeler.loopy.domain.model.LoginData
+import com.hiebeler.loopy.domain.usecases.GetCurrentLoginDataUseCase
 import com.hiebeler.loopy.ui.composables.HomeComposable
 import com.hiebeler.loopy.ui.composables.ProfileComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
 import com.hiebeler.loopy.utils.Navigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var hostSelectionInterceptorInterface: HostSelectionInterceptorInterface
+
+    @Inject
+    lateinit var currentLoginDataUseCase: GetCurrentLoginDataUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         runBlocking {
-            gotoLoginActivity(this@MainActivity)
+            val loginData: LoginData? = currentLoginDataUseCase()
+            if (loginData == null || loginData.accessToken.isBlank() || loginData.baseUrl.isBlank()) {
+            } else {
+                if (loginData.accessToken.isNotEmpty()) {
+                    hostSelectionInterceptorInterface.setToken(loginData.accessToken)
+                }
+                if (loginData.baseUrl.isNotEmpty()) {
+                    hostSelectionInterceptorInterface.setHost(
+                        loginData.baseUrl.replace(
+                            "https://", ""
+                        )
+                    )
+                }
+            }
         }
 
         setContent {

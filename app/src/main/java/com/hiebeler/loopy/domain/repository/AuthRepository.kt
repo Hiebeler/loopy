@@ -14,4 +14,5 @@ interface AuthRepository {
     suspend fun login(email: String, password: String): Flow<Resource<LoginModel>>
     suspend fun logout()
     suspend fun removeLoginData(accountId: String)
+    suspend fun getCurrentLoginData(): LoginData?
 }
