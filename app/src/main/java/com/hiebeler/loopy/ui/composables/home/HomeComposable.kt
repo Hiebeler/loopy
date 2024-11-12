@@ -1,12 +1,10 @@
 package com.hiebeler.loopy.ui.composables.home
 
 import android.app.ActionBar.LayoutParams
-import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,11 +19,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -34,39 +30,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DefaultDataSourceFactory
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.SimpleExoPlayer
-import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.hiebeler.loopy.R
 import com.hiebeler.loopy.domain.model.Post
 import sv.lib.squircleshape.SquircleShape
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeComposable(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel(key = "home-viewmodel-key")
 ) {
-    Scaffold(topBar = {
-        TopAppBar(windowInsets = WindowInsets(0, 0, 0, 0), title = {
-            Text(stringResource(id = R.string.app_name), fontWeight = FontWeight.Bold)
-        }, actions = {
-            Row {
-
-            }
-        })
-    }) { padding ->
+    Scaffold { padding ->
         Box(modifier = Modifier.padding(padding)) {
             LazyColumn {
                 items(viewModel.feedState.feed) { item ->
@@ -87,11 +69,6 @@ fun HomeComposable(
                 }
             }
         }
-
-
-
-
-        Text("home")
     }
 }
 
@@ -124,16 +101,15 @@ fun Post(post: Post) {
             model = post.media.thumbnail,
             contentDescription = "",
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(9f / 16f),
-            contentScale = ContentScale.Crop
+                .fillMaxSize(),
+            contentScale = ContentScale.Fit
         )
 
         AndroidView(
             factory = { context ->
                 PlayerView(context).apply {
                     player = exoPlayer
-                    useController = true
+                    useController = false
                     layoutParams = LayoutParams(
                         LayoutParams.MATCH_PARENT,
                         LayoutParams.MATCH_PARENT
@@ -168,22 +144,25 @@ fun Post(post: Post) {
                 }
             }
 
+            Box(Modifier.wrapContentWidth().padding(12.dp).fillMaxHeight()) {
+                Column (Modifier.align(Alignment.BottomEnd), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "", modifier = Modifier.size(32.dp)
+                    )
+                    Text(post.likes.toString(), fontWeight = FontWeight.Bold)
 
-            Column (Modifier.wrapContentWidth().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "", modifier = Modifier.size(32.dp)
-                )
-                Text(post.likes.toString(), fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(12.dp))
 
-                Spacer(Modifier.height(12.dp))
+                    Icon(
+                        imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "", modifier = Modifier.size(32.dp)
+                    )
+                    Text(post.likes.toString(), fontWeight = FontWeight.Bold)
 
-                Icon(
-                    imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "", modifier = Modifier.size(32.dp)
-                )
-                Text(post.likes.toString(), fontWeight = FontWeight.Bold)
-
-                Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(12.dp))
+                }
             }
+
+
         }
 
 
