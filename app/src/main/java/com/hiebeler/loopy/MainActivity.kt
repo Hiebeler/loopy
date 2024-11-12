@@ -30,7 +30,7 @@ import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import com.hiebeler.loopy.common.Destinations
 import com.hiebeler.loopy.domain.model.LoginData
 import com.hiebeler.loopy.domain.usecases.GetCurrentLoginDataUseCase
-import com.hiebeler.loopy.ui.composables.HomeComposable
+import com.hiebeler.loopy.ui.composables.home.HomeComposable
 import com.hiebeler.loopy.ui.composables.profile.ProfileComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
 import com.hiebeler.loopy.utils.Navigate

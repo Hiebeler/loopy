@@ -9,9 +9,11 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import com.hiebeler.loopy.data.remote.LoopsApi
 import com.hiebeler.loopy.data.repository.AuthRepositoryImpl
+import com.hiebeler.loopy.data.repository.TimelineRepositoryImpl
 import com.hiebeler.loopy.data.repository.UserRepositoryImpl
 import com.hiebeler.loopy.domain.model.AuthData
 import com.hiebeler.loopy.domain.repository.AuthRepository
+import com.hiebeler.loopy.domain.repository.TimelineRepository
 import com.hiebeler.loopy.domain.repository.UserRepository
 import com.hiebeler.loopy.utils.AuthDataSerializer
 import dagger.Module
@@ -50,6 +52,12 @@ class Module {
     fun provideUserRepository(
         loopsApi: LoopsApi
     ): UserRepository = UserRepositoryImpl(loopsApi)
+
+    @Provides
+    @Singleton
+    fun provideTimelineRepository(
+        loopsApi: LoopsApi
+    ): TimelineRepository = TimelineRepositoryImpl(loopsApi)
 
     @Provides
     @Singleton
