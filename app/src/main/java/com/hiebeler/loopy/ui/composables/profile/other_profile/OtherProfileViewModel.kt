@@ -1,4 +1,4 @@
-package com.hiebeler.loopy.ui.composables.profile
+package com.hiebeler.loopy.ui.composables.own_profile
 
 
 import androidx.compose.runtime.getValue
@@ -8,26 +8,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
+import com.hiebeler.loopy.domain.usecases.GetUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
-    private val getOwnUserUseCase: GetOwnUserUseCase
+class OtherProfileViewModel @Inject constructor(
+    private val getUserUseCase: GetUserUseCase
 ) : ViewModel() {
 
 
-    var ownProfileState by mutableStateOf(UserState())
+    var profileState by mutableStateOf(UserState())
 
-    init {
-        getOwnUser(false)
+
+    fun loadData(userId: String, refreshing: Boolean) {
+        loadUser(userId, refreshing)
     }
 
-    private fun getOwnUser(refreshing: Boolean) {
-        getOwnUserUseCase().onEach { result ->
-            ownProfileState = when (result) {
+    private fun loadUser(userId: String, refreshing: Boolean) {
+        getUserUseCase(userId).onEach { result ->
+            profileState = when (result) {
                 is Resource.Success -> {
                     UserState(user = result.data)
                 }
@@ -38,7 +40,7 @@ class ProfileViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     UserState(
-                        isLoading = true, user = ownProfileState.user, refreshing = refreshing
+                        isLoading = true, user = profileState.user, refreshing = refreshing
                     )
                 }
             }

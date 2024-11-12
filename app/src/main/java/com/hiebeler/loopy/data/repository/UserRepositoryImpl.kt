@@ -13,9 +13,17 @@ class UserRepositoryImpl @Inject constructor(
     private val loopsApi: LoopsApi
 ) : UserRepository {
 
-    override suspend fun getOwnUser(): Flow<Resource<Account>> {
+    override fun getOwnUser(): Flow<Resource<Account>> {
         return NetworkCall<Account, AccountDto>().makeCall(
             loopsApi.getOwnUser()
+        )
+    }
+
+    override fun getUser(accountId: String): Flow<Resource<Account>> {
+        return NetworkCall<Account, AccountDto>().makeCall(
+            loopsApi.getUser(
+                accountId
+            )
         )
     }
 }

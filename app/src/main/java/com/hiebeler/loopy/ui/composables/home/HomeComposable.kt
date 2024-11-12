@@ -1,6 +1,7 @@
 package com.hiebeler.loopy.ui.composables.home
 
 import android.app.ActionBar.LayoutParams
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +42,7 @@ import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.hiebeler.loopy.domain.model.Post
+import com.hiebeler.loopy.utils.Navigate
 import sv.lib.squircleshape.SquircleShape
 
 @Composable
@@ -52,7 +54,7 @@ fun HomeComposable(
         Box(modifier = Modifier.padding(padding)) {
             LazyColumn {
                 items(viewModel.feedState.feed) { item ->
-                    Post(item)
+                    Post(item, navController)
                     Spacer(Modifier.height(18.dp))
                 }
 
@@ -74,7 +76,7 @@ fun HomeComposable(
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
-fun Post(post: Post) {
+fun Post(post: Post, navController: NavController) {
 
     val context = LocalContext.current
 
@@ -122,7 +124,11 @@ fun Post(post: Post) {
         Row (modifier = Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(18.dp)) {
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 Column (Modifier.align(Alignment.BottomStart)) {
-                    Row (verticalAlignment = Alignment.CenterVertically) {
+                    Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+                        Navigate.navigate(
+                            "profile_screen/" + post.account.id, navController
+                        )
+                    }) {
                         AsyncImage(
                             model = post.account.avatar,
                             contentDescription = "",

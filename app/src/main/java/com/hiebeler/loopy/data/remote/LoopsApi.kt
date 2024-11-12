@@ -8,6 +8,7 @@ import com.hiebeler.loopy.domain.model.FeedWrapper
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface LoopsApi {
@@ -19,6 +20,11 @@ interface LoopsApi {
 
     @GET("api/v0/user/self")
     fun getOwnUser(): Call<AccountDto>
+
+    @GET("api/v0/user/id/{accountid}")
+    fun getUser(
+        @Path("accountid") accountId: String
+    ): Call<AccountDto>
 
     @POST("/auth/start?device_name=Loopy&build=4")
     fun login(

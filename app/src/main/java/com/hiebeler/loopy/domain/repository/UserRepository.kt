@@ -5,5 +5,6 @@ import com.hiebeler.loopy.domain.model.Account
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun getOwnUser(): Flow<Resource<Account>>
+    fun getOwnUser(): Flow<Resource<Account>>
+    fun getUser(accountId: String): Flow<Resource<Account>>
 }
