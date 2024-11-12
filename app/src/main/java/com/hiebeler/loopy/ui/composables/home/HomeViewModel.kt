@@ -56,4 +56,35 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
 
     }
+
+    fun loadMorePosts(maxId: String) {
+        getForYouFeedUseCase(maxPostId = maxId).onEach { result ->
+            feedState = when (result) {
+                is Resource.Success -> {
+                    ForYouFeedState(
+                        feed = feedState.feed + (result.data ?: emptyList()),
+                        error = "",
+                        isLoading = false,
+                        refreshing = false
+                    )
+                }
+
+                is Resource.Error -> {
+                    ForYouFeedState(
+                        feed = feedState.feed,
+                        error = result.message ?: "An unexpected error occurred",
+                        isLoading = false,
+                        refreshing = false
+                    )
+                }
+
+                is Resource.Loading -> {
+                    ForYouFeedState(
+                        feed = feedState.feed, error = "", isLoading = true, refreshing = false
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+
+    }
 }

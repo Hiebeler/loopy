@@ -1,6 +1,7 @@
 package com.hiebeler.loopy.ui.composables.home
 
 import android.app.ActionBar.LayoutParams
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,9 +53,35 @@ fun HomeComposable(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel(key = "home-viewmodel-key")
 ) {
+    val pagerState = rememberPagerState(pageCount = {
+        Int.MAX_VALUE
+    })
     Scaffold { padding ->
         Box(modifier = Modifier.padding(padding)) {
-            LazyColumn {
+            VerticalPager(state = pagerState) { pageIndex: Int ->
+                if (viewModel.feedState.isLoading) {
+                    CircularProgressIndicator()
+                } else {
+                    if (pageIndex >= viewModel.feedState.feed.size - 2 && viewModel.feedState.feed.isNotEmpty()) {
+                        LaunchedEffect(pageIndex) {
+                            viewModel.loadMorePosts(viewModel.feedState.feed.last().id)
+                        }
+                    }
+                    var item: Post? = null
+                    if (pageIndex < viewModel.feedState.feed.size) {
+                        item = viewModel.feedState.feed[pageIndex]
+                    } else {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    item?.let {
+                        Post(item)
+                    }
+                }
+
+            }
+            /*LazyColumn {
                 items(viewModel.feedState.feed) { item ->
                     Post(item)
                     Spacer(Modifier.height(18.dp))
@@ -61,7 +92,7 @@ fun HomeComposable(
                         CircularProgressIndicator()
                     }
                 }
-            }
+            }*/
 
             if (viewModel.feedState.error.isNotEmpty()) {
                 Box {
@@ -72,7 +103,7 @@ fun HomeComposable(
     }
 }
 
-@androidx.annotation.OptIn(UnstableApi::class)
+@OptIn(UnstableApi::class)
 @Composable
 fun Post(post: Post) {
 
@@ -119,10 +150,19 @@ fun Post(post: Post) {
             modifier = Modifier.fillMaxSize()
         )
 
-        Row (modifier = Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(18.dp)) {
-            Box(Modifier.weight(1f).fillMaxHeight()) {
-                Column (Modifier.align(Alignment.BottomStart)) {
-                    Row (verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+                .padding(18.dp)
+        ) {
+            Box(
+                Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+            ) {
+                Column(Modifier.align(Alignment.BottomStart)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         AsyncImage(
                             model = post.account.avatar,
                             contentDescription = "",
@@ -144,17 +184,29 @@ fun Post(post: Post) {
                 }
             }
 
-            Box(Modifier.wrapContentWidth().padding(12.dp).fillMaxHeight()) {
-                Column (Modifier.align(Alignment.BottomEnd), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                Modifier
+                    .wrapContentWidth()
+                    .padding(12.dp)
+                    .fillMaxHeight()
+            ) {
+                Column(
+                    Modifier.align(Alignment.BottomEnd),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Icon(
-                        imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "", modifier = Modifier.size(32.dp)
+                        imageVector = Icons.Rounded.FavoriteBorder,
+                        contentDescription = "",
+                        modifier = Modifier.size(32.dp)
                     )
                     Text(post.likes.toString(), fontWeight = FontWeight.Bold)
 
                     Spacer(Modifier.height(12.dp))
 
                     Icon(
-                        imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "", modifier = Modifier.size(32.dp)
+                        imageVector = Icons.Rounded.FavoriteBorder,
+                        contentDescription = "",
+                        modifier = Modifier.size(32.dp)
                     )
                     Text(post.likes.toString(), fontWeight = FontWeight.Bold)
 
