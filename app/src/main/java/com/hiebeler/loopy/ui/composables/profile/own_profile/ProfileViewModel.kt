@@ -1,4 +1,4 @@
-package com.hiebeler.loopy.ui.composables.profile
+package com.hiebeler.loopy.ui.composables.profile.own_profile
 
 
 import androidx.compose.runtime.getValue
@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
+import com.hiebeler.loopy.ui.composables.own_profile.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

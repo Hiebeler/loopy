@@ -31,7 +31,8 @@ import com.hiebeler.loopy.common.Destinations
 import com.hiebeler.loopy.domain.model.LoginData
 import com.hiebeler.loopy.domain.usecases.GetCurrentLoginDataUseCase
 import com.hiebeler.loopy.ui.composables.home.HomeComposable
-import com.hiebeler.loopy.ui.composables.profile.ProfileComposable
+import com.hiebeler.loopy.ui.composables.own_profile.ProfileComposable
+import com.hiebeler.loopy.ui.composables.profile.other_profile.OtherProfileComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
 import com.hiebeler.loopy.utils.Navigate
 import dagger.hilt.android.AndroidEntryPoint
@@ -101,6 +102,13 @@ fun NavigationGraph(navController: NavHostController) {
         }
         composable(Destinations.OwnProfileScreen.route) {
             ProfileComposable(navController = navController)
+        }
+
+        composable(Destinations.Profile.route) { navBackStackEntry ->
+            val uId = navBackStackEntry.arguments?.getString("userid")
+            uId?.let { id ->
+                OtherProfileComposable(navController, userId = id)
+            }
         }
     }
 }

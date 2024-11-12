@@ -3,6 +3,7 @@ package com.hiebeler.loopy.common
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.hiebeler.loopy.R
@@ -16,4 +17,8 @@ sealed class Destinations(
     object OwnProfileScreen : Destinations(
         route = "own_profile_screen", icon = Icons.Outlined.AccountCircle, label = R.string.profile
     )
+    object Profile : Destinations(
+        route = "profile_screen/{userid}", icon = Icons.Outlined.Favorite
+    )
+
 }

@@ -2,6 +2,8 @@ package com.hiebeler.loopy.di
 
 import com.hiebeler.loopy.domain.repository.UserRepository
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
+import com.hiebeler.loopy.domain.usecases.GetPostsOfUserUseCase
+import com.hiebeler.loopy.domain.usecases.GetUserUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,4 +19,16 @@ class UserModule {
     fun provideGetOwnUserUseCase(
         repository: UserRepository
     ): GetOwnUserUseCase = GetOwnUserUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetUserUseCase(
+        repository: UserRepository
+    ): GetUserUseCase = GetUserUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetPostsOfUserUseCase(
+        repository: UserRepository
+    ): GetPostsOfUserUseCase = GetPostsOfUserUseCase(repository)
 }
