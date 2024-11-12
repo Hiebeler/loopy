@@ -1,5 +1,7 @@
 package com.hiebeler.loopy.ui.composables.home
 
+import android.app.ActionBar.LayoutParams
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,14 +27,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSourceFactory
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SimpleExoPlayer
+import androidx.media3.exoplayer.dash.DashMediaSource
+import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.hiebeler.loopy.R
@@ -57,6 +71,7 @@ fun HomeComposable(
             LazyColumn {
                 items(viewModel.feedState.feed) { item ->
                     Post(item)
+                    Spacer(Modifier.height(18.dp))
                 }
 
                 if(viewModel.feedState.isLoading) {
@@ -80,9 +95,30 @@ fun HomeComposable(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun Post(post: Post) {
-    Box() {
+
+    val context = LocalContext.current
+
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context)
+            .build()
+            .apply {
+                setMediaItem(MediaItem.fromUri(post.media.srcUrl))
+                prepare()
+                playWhenReady = true
+            }
+    }
+
+    // Release the player when done
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+
+    Box(Modifier.aspectRatio(9f / 16f)) {
 
         AsyncImage(
             model = post.media.thumbnail,
@@ -91,6 +127,20 @@ fun Post(post: Post) {
                 .fillMaxWidth()
                 .aspectRatio(9f / 16f),
             contentScale = ContentScale.Crop
+        )
+
+        AndroidView(
+            factory = { context ->
+                PlayerView(context).apply {
+                    player = exoPlayer
+                    useController = true
+                    layoutParams = LayoutParams(
+                        LayoutParams.MATCH_PARENT,
+                        LayoutParams.MATCH_PARENT
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxSize()
         )
 
         Row (modifier = Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(18.dp)) {
