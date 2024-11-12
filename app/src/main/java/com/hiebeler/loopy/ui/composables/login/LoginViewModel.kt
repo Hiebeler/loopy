@@ -1,10 +1,13 @@
 package com.hiebeler.loopy.ui.composables.login
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hiebeler.loopy.MainActivity
 import com.hiebeler.loopy.domain.usecases.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -38,11 +41,13 @@ class LoginViewModel @Inject constructor(
         isValidEmail = emailRegex.matches(email)
     }
 
-    fun login() {
+    fun login(context: Context) {
         if (domainRegex.matches(customUrl) && emailRegex.matches(email)) {
             loginUseCase(customUrl, email, password).onEach { result ->
                 if (result.success) {
-
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    context.startActivity(intent)
                 }
 
                 loginState = result

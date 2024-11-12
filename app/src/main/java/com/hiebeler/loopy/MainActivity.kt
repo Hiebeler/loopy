@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
         runBlocking {
             val loginData: LoginData? = currentLoginDataUseCase()
             if (loginData == null || loginData.accessToken.isBlank() || loginData.baseUrl.isBlank()) {
+                gotoLoginActivity(this@MainActivity)
             } else {
                 if (loginData.accessToken.isNotEmpty()) {
                     hostSelectionInterceptorInterface.setToken(loginData.accessToken)

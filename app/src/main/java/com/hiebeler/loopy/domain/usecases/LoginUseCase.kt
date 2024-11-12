@@ -42,7 +42,7 @@ class LoginUseCase(
                                 baseUrl = userData.url
                             )
 
-                            authRepository.addNewLoginData(newLoginData)
+                            authRepository.finishLogin(newLoginData, userData.id)
                             emit(LoginState(success = true))
                         }
                     }

@@ -116,7 +116,7 @@ fun LoginComposable(
                             keyboardController?.hide()
                             focusManager.clearFocus()
                             CoroutineScope(Dispatchers.Default).launch {
-                                viewModel.login()
+                                viewModel.login(context)
                             }
                         })
                     )
@@ -149,7 +149,7 @@ fun LoginComposable(
                         Button(
                             onClick = {
                                 CoroutineScope(Dispatchers.Default).launch {
-                                    viewModel.login()
+                                    viewModel.login(context)
                                 }
                             },
                             Modifier
