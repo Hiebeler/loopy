@@ -3,7 +3,9 @@ package com.hiebeler.loopy.data.repository
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.data.remote.LoopsApi
 import com.hiebeler.loopy.data.remote.dto.AccountDto
+import com.hiebeler.loopy.data.remote.dto.FeedWrapperDto
 import com.hiebeler.loopy.domain.model.Account
+import com.hiebeler.loopy.domain.model.FeedWrapper
 import com.hiebeler.loopy.domain.repository.UserRepository
 import com.hiebeler.loopy.utils.NetworkCall
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +24,14 @@ class UserRepositoryImpl @Inject constructor(
     override fun getUser(accountId: String): Flow<Resource<Account>> {
         return NetworkCall<Account, AccountDto>().makeCall(
             loopsApi.getUser(
+                accountId
+            )
+        )
+    }
+
+    override fun getPostsOfUser(accountId: String): Flow<Resource<FeedWrapper>> {
+        return NetworkCall<FeedWrapper, FeedWrapperDto>().makeCall(
+            loopsApi.getPostsOfUser(
                 accountId
             )
         )
