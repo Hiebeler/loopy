@@ -6,6 +6,7 @@ import com.hiebeler.loopy.domain.model.LoginData
 import com.hiebeler.loopy.domain.model.LoginModel
 import com.hiebeler.loopy.domain.repository.AuthRepository
 import com.hiebeler.loopy.domain.repository.UserRepository
+import com.hiebeler.loopy.ui.composables.login.LoginState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -16,8 +17,8 @@ class LoginUseCase(
 ) {
     operator fun invoke(
         baseUrl: String, email: String, password: String
-    ): Flow<Resource<LoginModel>> = flow {
-        emit(Resource.Loading())
+    ): Flow<LoginState> = flow {
+        emit(LoginState(isLoading = true))
         if (baseUrl.isNotBlank()) {
             hostSelectionInterceptorInterface.setHost(baseUrl.replace("https://", ""))
         }
@@ -42,12 +43,12 @@ class LoginUseCase(
                             )
 
                             authRepository.addNewLoginData(newLoginData)
-                            emit(loginModel)
+                            emit(LoginState(success = true))
                         }
                     }
                 }
-            } else {
-                emit(loginModel)
+            } else if (loginModel is Resource.Error) {
+                emit(LoginState(error = loginModel.message ?: "Something went wrong"))
             }
         }
 

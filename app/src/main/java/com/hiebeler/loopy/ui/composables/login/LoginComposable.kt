@@ -1,4 +1,4 @@
-package com.hiebeler.loopy.ui.composables
+package com.hiebeler.loopy.ui.composables.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -121,7 +121,15 @@ fun LoginComposable(
                         })
                     )
                     Spacer(Modifier.height(24.dp))
-                    if (viewModel.loading) {
+
+                    if (viewModel.loginState.error.isNotEmpty()) {
+
+                        Text(viewModel.loginState.error)
+
+                        Spacer(Modifier.height(24.dp))
+                    }
+
+                    if (viewModel.loginState.isLoading) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
