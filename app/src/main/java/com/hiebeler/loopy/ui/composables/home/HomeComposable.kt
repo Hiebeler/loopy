@@ -2,6 +2,7 @@ package com.hiebeler.loopy.ui.composables.home
 
 import android.app.ActionBar.LayoutParams
 import androidx.annotation.OptIn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +47,8 @@ import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.hiebeler.loopy.domain.model.Post
+import com.hiebeler.loopy.ui.composables.post.LargePost
+import com.hiebeler.loopy.utils.Navigate
 import sv.lib.squircleshape.SquircleShape
 
 @Composable
@@ -76,12 +79,11 @@ fun HomeComposable(
                         }
                     }
                     item?.let {
-                        Post(item)
+                        LargePost(item, navController)
                     }
                 }
 
-            }
-            /*LazyColumn {
+            }/*LazyColumn {
                 items(viewModel.feedState.feed) { item ->
                     Post(item)
                     Spacer(Modifier.height(18.dp))
@@ -103,120 +105,3 @@ fun HomeComposable(
     }
 }
 
-@OptIn(UnstableApi::class)
-@Composable
-fun Post(post: Post) {
-
-    val context = LocalContext.current
-
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context)
-            .build()
-            .apply {
-                setMediaItem(MediaItem.fromUri(post.media.srcUrl))
-                prepare()
-                playWhenReady = true
-            }
-    }
-
-    // Release the player when done
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.release()
-        }
-    }
-
-    Box(Modifier.aspectRatio(9f / 16f)) {
-
-        AsyncImage(
-            model = post.media.thumbnail,
-            contentDescription = "",
-            modifier = Modifier
-                .fillMaxSize(),
-            contentScale = ContentScale.Fit
-        )
-
-        AndroidView(
-            factory = { context ->
-                PlayerView(context).apply {
-                    player = exoPlayer
-                    useController = false
-                    layoutParams = LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        LayoutParams.MATCH_PARENT
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .padding(18.dp)
-        ) {
-            Box(
-                Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            ) {
-                Column(Modifier.align(Alignment.BottomStart)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        AsyncImage(
-                            model = post.account.avatar,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(45.dp)
-                                .clip(shape = SquircleShape()),
-                            contentScale = ContentScale.Crop
-                        )
-
-                        Spacer(Modifier.width(12.dp))
-                        Text(post.account.username, fontWeight = FontWeight.Bold)
-                    }
-
-                    if (post.caption.isNotEmpty()) {
-                        Text(post.caption)
-                    }
-
-                    Spacer(Modifier.height(12.dp))
-                }
-            }
-
-            Box(
-                Modifier
-                    .wrapContentWidth()
-                    .padding(12.dp)
-                    .fillMaxHeight()
-            ) {
-                Column(
-                    Modifier.align(Alignment.BottomEnd),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.FavoriteBorder,
-                        contentDescription = "",
-                        modifier = Modifier.size(32.dp)
-                    )
-                    Text(post.likes.toString(), fontWeight = FontWeight.Bold)
-
-                    Spacer(Modifier.height(12.dp))
-
-                    Icon(
-                        imageVector = Icons.Rounded.FavoriteBorder,
-                        contentDescription = "",
-                        modifier = Modifier.size(32.dp)
-                    )
-                    Text(post.likes.toString(), fontWeight = FontWeight.Bold)
-
-                    Spacer(Modifier.height(12.dp))
-                }
-            }
-
-
-        }
-
-
-    }
-}

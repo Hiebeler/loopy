@@ -6,4 +6,5 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="i_don_t_have_an_account">I don\'t have an account</string>
+    <string name="inbox">Inbox</string>
 </resources>

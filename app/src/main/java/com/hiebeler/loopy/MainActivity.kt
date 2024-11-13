@@ -31,6 +31,7 @@ import com.hiebeler.loopy.common.Destinations
 import com.hiebeler.loopy.domain.model.LoginData
 import com.hiebeler.loopy.domain.usecases.GetCurrentLoginDataUseCase
 import com.hiebeler.loopy.ui.composables.home.HomeComposable
+import com.hiebeler.loopy.ui.composables.inbox.InboxComposable
 import com.hiebeler.loopy.ui.composables.own_profile.ProfileComposable
 import com.hiebeler.loopy.ui.composables.profile.other_profile.OtherProfileComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
@@ -74,7 +75,8 @@ class MainActivity : ComponentActivity() {
             LoopyTheme {
                 val navController: NavHostController = rememberNavController()
 
-                Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = { BottomBar(navController = navController) }) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize(),
+                    bottomBar = { BottomBar(navController = navController) }) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         NavigationGraph(
                             navController = navController
@@ -104,6 +106,10 @@ fun NavigationGraph(navController: NavHostController) {
             ProfileComposable(navController = navController)
         }
 
+        composable(Destinations.Inbox.route) {
+            InboxComposable(navController = navController)
+        }
+
         composable(Destinations.Profile.route) { navBackStackEntry ->
             val uId = navBackStackEntry.arguments?.getString("userid")
             uId?.let { id ->
@@ -118,6 +124,7 @@ fun NavigationGraph(navController: NavHostController) {
 fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         Destinations.HomeScreen,
+        Destinations.Inbox,
         Destinations.OwnProfileScreen,
     )
 
