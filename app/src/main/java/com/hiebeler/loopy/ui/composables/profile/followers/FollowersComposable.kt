@@ -30,7 +30,7 @@ fun FollowersComposable(
             .fillMaxSize()
             .padding(horizontal = 18.dp)
     ) {
-        if (viewModel.followerState.followers?.data?.isNotEmpty() == true) {
+        if (viewModel.followerState.followers?.data != null) {
             LazyColumn {
                 items(viewModel.followerState.followers!!.data) { user ->
                     UserRow(user, navController)

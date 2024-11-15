@@ -4,7 +4,7 @@ import com.hiebeler.loopy.domain.model.Links
 import com.hiebeler.loopy.domain.model.Meta
 
 data class MetaDto(
-    val next_cursor: String,
+    val next_cursor: String?,
     val path: String,
     val per_page: Int,
     val prev_cursor: String?

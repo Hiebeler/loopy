@@ -6,7 +6,7 @@ import com.hiebeler.loopy.domain.model.Links
 data class LinksDto(
     val first: Any?,
     val last: Any?,
-    val next: String,
+    val next: String?,
     val prev: String?
 ) : DtoInterface<Links> {
     override fun toModel(): Links {
