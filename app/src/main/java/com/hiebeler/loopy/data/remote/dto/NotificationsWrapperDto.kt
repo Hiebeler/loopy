@@ -10,7 +10,9 @@ data class NotificationsWrapperDto(
 ) : DtoInterface<NotificationsWrapper> {
     override fun toModel(): NotificationsWrapper {
         return NotificationsWrapper(
-            data = data.map { it.toModel() }, links = links.toModel(), meta = meta.toModel()
+            data = data.map { it.toModel() },
+            nextCursor = meta.toModel().nextCursor ?: "",
+            previousCursor = meta.toModel().prevCursor ?: ""
         )
     }
 }

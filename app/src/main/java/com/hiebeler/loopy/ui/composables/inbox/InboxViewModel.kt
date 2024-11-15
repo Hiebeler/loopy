@@ -32,7 +32,9 @@ class InboxViewModel @Inject constructor(
             inboxState = when (result) {
                 is Resource.Success -> {
                     InboxState(
-                        inbox = result.data,
+                        notifications = result.data?.data ?: emptyList(),
+                        nextCursor = result.data?.nextCursor ?: "",
+                        previousCursor = result.data?.nextCursor ?: "",
                         error = "",
                         isLoading = false,
                         refreshing = false
@@ -41,7 +43,9 @@ class InboxViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     InboxState(
-                        inbox = inboxState.inbox,
+                        notifications = inboxState.notifications,
+                        nextCursor = inboxState.nextCursor,
+                        previousCursor = inboxState.previousCursor,
                         error = result.message ?: "An unexpected error occurred",
                         isLoading = false,
                         refreshing = false
@@ -50,7 +54,12 @@ class InboxViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     InboxState(
-                        inbox = inboxState.inbox, error = "", isLoading = true, refreshing = refreshing
+                        notifications = inboxState.notifications,
+                        nextCursor = inboxState.nextCursor,
+                        previousCursor = inboxState.previousCursor,
+                        error = "",
+                        isLoading = true,
+                        refreshing = refreshing
                     )
                 }
             }

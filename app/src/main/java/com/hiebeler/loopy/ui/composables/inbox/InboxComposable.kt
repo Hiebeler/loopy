@@ -33,13 +33,15 @@ fun InboxComposable(
                 Text("Notifications", fontWeight = FontWeight.Bold)
             })
     }) { padding ->
-        Box(modifier = Modifier.padding(padding).padding(16.dp)) {
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .padding(16.dp)
+        ) {
 
-            if (viewModel.inboxState.inbox != null) {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    items(viewModel.inboxState.inbox!!.data) {
-                        UserRow(it.actor, navController)
-                    }
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                items(viewModel.inboxState.notifications) {
+                    UserRow(it.actor, navController)
                 }
             }
 
