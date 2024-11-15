@@ -62,7 +62,9 @@ fun OtherProfileComposable(
 ) {
 
     val followerSheetState = rememberModalBottomSheetState()
+    val shareSheetState = rememberModalBottomSheetState()
     var showFollowerSheet by remember { mutableStateOf(false) }
+    var showShareSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.loadData(userId, false)
@@ -85,7 +87,7 @@ fun OtherProfileComposable(
             },
             actions = {
                 IconButton(onClick = {
-
+                    showShareSheet = true
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.MoreVert, contentDescription = ""
@@ -183,6 +185,15 @@ fun OtherProfileComposable(
             }, sheetState = followerSheetState
         ) {
             FollowersComposable(userId, navController)
+        }
+    }
+
+    if (showShareSheet && viewModel.profileState.user != null) {
+        ModalBottomSheet(onDismissRequest = {
+            showShareSheet = false
+        }, sheetState = shareSheetState
+        ) {
+            ShareSheetComposable(viewModel.profileState.user!!)
         }
     }
 

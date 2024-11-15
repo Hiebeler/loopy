@@ -18,11 +18,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,23 +46,26 @@ import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.hiebeler.loopy.domain.model.Post
+import com.hiebeler.loopy.ui.composables.profile.followers.FollowersComposable
 import com.hiebeler.loopy.utils.Navigate
 import sv.lib.squircleshape.SquircleShape
 
-@OptIn(UnstableApi::class)
+
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LargePost(post: Post, navController: NavController) {
 
     val context = LocalContext.current
 
+    val moreSheetState = rememberModalBottomSheetState()
+    var showMoreSheet by remember { mutableStateOf(false) }
+
     val exoPlayer = remember {
-        ExoPlayer.Builder(context)
-            .build()
-            .apply {
-                setMediaItem(MediaItem.fromUri(post.media.srcUrl))
-                prepare()
-                playWhenReady = true
-            }
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(post.media.srcUrl))
+            prepare()
+            playWhenReady = true
+        }
     }
 
     // Release the player when done
@@ -69,8 +80,7 @@ fun LargePost(post: Post, navController: NavController) {
         AsyncImage(
             model = post.media.thumbnail,
             contentDescription = "",
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Fit
         )
 
@@ -80,12 +90,10 @@ fun LargePost(post: Post, navController: NavController) {
                     player = exoPlayer
                     useController = false
                     layoutParams = LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        LayoutParams.MATCH_PARENT
+                        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT
                     )
                 }
-            },
-            modifier = Modifier.fillMaxSize()
+            }, modifier = Modifier.fillMaxSize()
         )
 
         Row(
@@ -100,11 +108,12 @@ fun LargePost(post: Post, navController: NavController) {
                     .fillMaxHeight()
             ) {
                 Column(Modifier.align(Alignment.BottomStart)) {
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-                        Navigate.navigate(
-                            "profile_screen/" + post.account.id, navController
-                        )
-                    }) {
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            Navigate.navigate(
+                                "profile_screen/" + post.account.id, navController
+                            )
+                        }) {
                         AsyncImage(
                             model = post.account.avatar,
                             contentDescription = "",
@@ -136,6 +145,18 @@ fun LargePost(post: Post, navController: NavController) {
                     Modifier.align(Alignment.BottomEnd),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    IconButton(onClick = {
+                        showMoreSheet = true
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.MoreVert,
+                            contentDescription = "",
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+
+
+                    Spacer(Modifier.height(12.dp))
                     Icon(
                         imageVector = Icons.Rounded.FavoriteBorder,
                         contentDescription = "",
@@ -160,5 +181,14 @@ fun LargePost(post: Post, navController: NavController) {
         }
 
 
+    }
+
+    if (showMoreSheet) {
+        ModalBottomSheet(onDismissRequest = {
+            showMoreSheet = false
+        }, sheetState = moreSheetState
+        ) {
+            MoreComposable(post)
+        }
     }
 }
