@@ -41,6 +41,12 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
+    override fun getPostsOfOwnUser(accountId: String): Flow<Resource<FeedWrapper>> {
+        return NetworkCall<FeedWrapper, FeedWrapperDto>().makeCall(
+            loopsApi.getPostsOfOwnUser()
+        )
+    }
+
     override fun getFollowers(accountId: String): Flow<Resource<FollowersWrapper>> {
         return NetworkCall<FollowersWrapper, FollowersWrapperDto>().makeCall(
             loopsApi.getFollowers(

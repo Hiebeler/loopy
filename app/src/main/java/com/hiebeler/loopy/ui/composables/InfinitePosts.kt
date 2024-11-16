@@ -61,7 +61,7 @@ private fun InfinitePostsGrid(
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         if (feedWrapper != null) {
-            items(feedWrapper.data) {post ->
+            items(feedWrapper.data) { post ->
                 SmallPost(post)
             }
         }
@@ -81,31 +81,27 @@ private fun InfinitePostsTimeline(
     })
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (error.isNotBlank()) {
-            Text(error)
-        } else {
-            VerticalPager(state = pagerState, beyondViewportPageCount = 1) { pageIndex: Int ->
-                if (isLoading || feedWrapper == null) {
-                    CircularProgressIndicator()
+        VerticalPager(state = pagerState, beyondViewportPageCount = 1) { pageIndex: Int ->
+            if (isLoading || feedWrapper == null) {
+                CircularProgressIndicator()
+            } else {
+                if (pageIndex >= feedWrapper.data.size - 2 && feedWrapper.data.isNotEmpty() && feedWrapper.meta.nextCursor != null) {
+                    LaunchedEffect(pageIndex) {
+                        feedWrapper.meta.nextCursor.let {
+                            loadMorePosts(it)
+                        }
+                    }
+                }
+                var item: Post? = null
+                if (pageIndex < feedWrapper.data.size) {
+                    item = feedWrapper.data[pageIndex]
                 } else {
-                    if (pageIndex >= feedWrapper.data.size - 2 && feedWrapper.data.isNotEmpty() && feedWrapper.meta.nextCursor != null) {
-                        LaunchedEffect(pageIndex) {
-                            feedWrapper.meta.nextCursor.let {
-                                loadMorePosts(it)
-                            }
-                        }
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator()
                     }
-                    var item: Post? = null
-                    if (pageIndex < feedWrapper.data.size) {
-                        item = feedWrapper.data[pageIndex]
-                    } else {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator()
-                        }
-                    }
-                    item?.let {
-                        LargePost(item, navController)
-                    }
+                }
+                item?.let {
+                    LargePost(item, navController)
                 }
             }
         }

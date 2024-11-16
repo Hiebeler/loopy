@@ -5,6 +5,7 @@ import com.hiebeler.loopy.domain.usecases.GetFollowersUseCase
 import com.hiebeler.loopy.domain.usecases.GetFollowingUseCase
 import com.hiebeler.loopy.domain.usecases.GetNotificationsUseCase
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
+import com.hiebeler.loopy.domain.usecases.GetPostsOfOwnUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetUserUseCase
 import dagger.Module
@@ -52,4 +53,10 @@ class UserModule {
     fun provideGetPostsOfUserUseCase(
         repository: UserRepository
     ): GetPostsOfUserUseCase = GetPostsOfUserUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetPostsOfOwnUserUseCase(
+        repository: UserRepository
+    ): GetPostsOfOwnUserUseCase = GetPostsOfOwnUserUseCase(repository)
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -17,22 +18,23 @@ import com.hiebeler.loopy.ui.composables.profile.UserRow
 
 @Composable
 fun FollowersComposable(
-    userId: String, navController: NavController, viewModel: FollowersViewModel = hiltViewModel(key = "follower-viewmodel-$userId-key")
+    userId: String,
+    navController: NavController,
+    viewModel: FollowersViewModel = hiltViewModel(key = "follower-viewmodel-$userId-key")
 ) {
 
     LaunchedEffect(Unit) {
         viewModel.loadData(userId, false)
     }
 
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 18.dp)
     ) {
-        if (viewModel.followerState.followers?.data != null) {
-            LazyColumn {
-                items(viewModel.followerState.followers!!.data) { user ->
+        LazyColumn {
+            viewModel.followerState.followers?.let { followers ->
+                items(followers.data) { user ->
                     UserRow(user, navController)
                     Spacer(Modifier.height(12.dp))
                 }

@@ -45,6 +45,9 @@ interface LoopsApi {
         @Path("accountid") accountId: String
     ): Call<FeedWrapperDto>
 
+    @GET("api/v0/user/self/videos")
+    fun getPostsOfOwnUser(): Call<FeedWrapperDto>
+
     @POST("/auth/start?device_name=Loopy&build=4")
     fun login(
         @Query("email") email: String, @Query("password") password: String

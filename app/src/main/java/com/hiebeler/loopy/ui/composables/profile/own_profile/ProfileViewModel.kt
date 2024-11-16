@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
+import com.hiebeler.loopy.domain.usecases.GetPostsOfOwnUserUseCase
 import com.hiebeler.loopy.ui.composables.own_profile.UserState
+import com.hiebeler.loopy.ui.composables.post.PostsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -16,14 +18,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val getOwnUserUseCase: GetOwnUserUseCase
+    private val getOwnUserUseCase: GetOwnUserUseCase,
+    private val getPostsOfOwnUserUseCase: GetPostsOfOwnUserUseCase
 ) : ViewModel() {
 
 
     var ownProfileState by mutableStateOf(UserState())
+    var postsState by mutableStateOf(PostsState())
 
     init {
         getOwnUser(false)
+        loadPosts(false)
     }
 
     private fun getOwnUser(refreshing: Boolean) {
@@ -40,6 +45,26 @@ class ProfileViewModel @Inject constructor(
                 is Resource.Loading -> {
                     UserState(
                         isLoading = true, user = ownProfileState.user, refreshing = refreshing
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun loadPosts(refreshing: Boolean) {
+        getPostsOfOwnUserUseCase().onEach { result ->
+            postsState = when (result) {
+                is Resource.Success -> {
+                    PostsState(feed = result.data)
+                }
+
+                is Resource.Error -> {
+                    PostsState(error = result.message ?: "An unexpected error occurred")
+                }
+
+                is Resource.Loading -> {
+                    PostsState(
+                        isLoading = true, feed = postsState.feed, refreshing = refreshing
                     )
                 }
             }

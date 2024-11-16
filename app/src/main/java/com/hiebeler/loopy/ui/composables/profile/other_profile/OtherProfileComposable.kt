@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
@@ -17,11 +18,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,6 +55,8 @@ import com.hiebeler.loopy.domain.model.ViewEnum
 import com.hiebeler.loopy.ui.composables.InfinitePosts
 import com.hiebeler.loopy.ui.composables.own_profile.OtherProfileViewModel
 import com.hiebeler.loopy.ui.composables.post.SmallPost
+import com.hiebeler.loopy.ui.composables.profile.PostsWrapperComposable
+import com.hiebeler.loopy.ui.composables.profile.ProfileTopSection
 import com.hiebeler.loopy.ui.composables.profile.followers.FollowersComposable
 import sv.lib.squircleshape.SquircleShape
 
@@ -62,10 +67,8 @@ fun OtherProfileComposable(
     userId: String,
     viewModel: OtherProfileViewModel = hiltViewModel(key = "other-profile$userId")
 ) {
-
-    val followerSheetState = rememberModalBottomSheetState()
+    val lazyGridState = rememberLazyGridState()
     val shareSheetState = rememberModalBottomSheetState()
-    var showFollowerSheet by remember { mutableStateOf(false) }
     var showShareSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -98,86 +101,33 @@ fun OtherProfileComposable(
             })
     }) { padding ->
 
-        Column(modifier = Modifier.padding(padding)) {
-            if (viewModel.profileState.user != null) {
+        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+               // modifier = Modifier.pullRefresh(pullRefreshState),
+                state = lazyGridState
+            ) {
+                item(span = { GridItemSpan(3) }) {
+                    if (viewModel.profileState.user != null) {
 
-                Column(
-                    Modifier
-                        .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainer)
-                        .padding(24.dp)
-                ) {
-                    Row(
-                        Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        AsyncImage(
-                            model = viewModel.profileState.user!!.avatar,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(90.dp)
-                                .clip(shape = SquircleShape()),
-                            contentScale = ContentScale.Crop
-                        )
-
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxWidth()
+                        Column(
+                            Modifier
+                                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
+                                .background(MaterialTheme.colorScheme.surfaceContainer)
+                                .padding(24.dp)
                         ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable {
-                                showFollowerSheet = true
-                            }) {
-                                Text(
-                                    "Follower",
-                                    fontSize = 12.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    viewModel.profileState.user!!.follower_count.toString(),
-                                    fontSize = 32.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(
-                                    "Following",
-                                    fontSize = 12.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    viewModel.profileState.user!!.following_count.toString(),
-                                    fontSize = 32.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                            if (viewModel.profileState.isLoading) {
+                                CircularProgressIndicator()
+                            } else if (viewModel.profileState.user != null) {
+                                ProfileTopSection(viewModel.profileState.user!!, navController)
                             }
                         }
-
-
-                    }
-
-                    Spacer(Modifier.height(24.dp))
-
-                    Text(viewModel.profileState.user!!.name, fontWeight = FontWeight.Bold)
-
-                    if (viewModel.profileState.user?.bio != null) {
-                        Text(viewModel.profileState.user!!.bio)
                     }
                 }
+                PostsWrapperComposable(viewModel.postsState.feed)
             }
-
-            if (viewModel.postsState.feed != null && viewModel.postsState.feed?.data!!.isNotEmpty()) {
-                InfinitePosts(ViewEnum.Grid, viewModel.postsState.feed, viewModel.postsState.isLoading, viewModel.postsState.error, loadMorePosts = {}, navController)
-            }
-        }
-    }
-
-    if (showFollowerSheet) {
-        ModalBottomSheet(onDismissRequest = {
-                showFollowerSheet = false
-            }, sheetState = followerSheetState
-        ) {
-            FollowersComposable(userId, navController)
         }
     }
 
