@@ -48,6 +48,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.hiebeler.loopy.domain.model.ViewEnum
+import com.hiebeler.loopy.ui.composables.InfinitePosts
 import com.hiebeler.loopy.ui.composables.own_profile.OtherProfileViewModel
 import com.hiebeler.loopy.ui.composables.post.SmallPost
 import com.hiebeler.loopy.ui.composables.profile.followers.FollowersComposable
@@ -164,17 +166,8 @@ fun OtherProfileComposable(
                 }
             }
 
-            if (viewModel.postsState.posts.isNotEmpty()) {
-                LazyVerticalGrid(
-                    modifier = Modifier.padding(12.dp),
-                    columns = GridCells.Fixed(3),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    items(viewModel.postsState.posts) { post ->
-                        SmallPost(post)
-                    }
-                }
+            if (viewModel.postsState.feed != null && viewModel.postsState.feed?.data!!.isNotEmpty()) {
+                InfinitePosts(ViewEnum.Grid, viewModel.postsState.feed, viewModel.postsState.isLoading, viewModel.postsState.error, loadMorePosts = {}, navController)
             }
         }
     }

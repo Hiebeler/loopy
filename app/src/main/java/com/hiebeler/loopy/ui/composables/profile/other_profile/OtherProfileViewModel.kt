@@ -56,7 +56,7 @@ class OtherProfileViewModel @Inject constructor(
         getPostsOfUserUseCase(userId).onEach { result ->
             postsState = when (result) {
                 is Resource.Success -> {
-                    PostsState(posts = result.data ?: emptyList())
+                    PostsState(feed = result.data)
                 }
 
                 is Resource.Error -> {
@@ -65,7 +65,7 @@ class OtherProfileViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     PostsState(
-                        isLoading = true, posts = postsState.posts, refreshing = refreshing
+                        isLoading = true, feed = postsState.feed, refreshing = refreshing
                     )
                 }
             }
