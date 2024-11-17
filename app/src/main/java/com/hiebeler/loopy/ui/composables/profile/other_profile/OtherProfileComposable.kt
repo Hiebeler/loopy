@@ -36,6 +36,9 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -107,7 +110,9 @@ fun OtherProfileComposable(
             })
     }) { padding ->
 
-        Box(
+        PullToRefreshBox(
+            isRefreshing = viewModel.profileState.refreshing || viewModel.postsState.refreshing,
+            onRefresh = {viewModel.refresh()},
             modifier = Modifier
                 .padding(padding)
                 .padding(horizontal = 12.dp)
@@ -117,7 +122,6 @@ fun OtherProfileComposable(
                 columns = GridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                // modifier = Modifier.pullRefresh(pullRefreshState),
                 state = lazyGridState
             ) {
                 item(span = { GridItemSpan(3) }) {

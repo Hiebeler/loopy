@@ -31,6 +31,11 @@ class ProfileViewModel @Inject constructor(
         loadPosts(false)
     }
 
+    fun refresh() {
+        getOwnUser(true)
+        loadPosts(true)
+    }
+
     private fun getOwnUser(refreshing: Boolean) {
         getOwnUserUseCase().onEach { result ->
             ownProfileState = when (result) {

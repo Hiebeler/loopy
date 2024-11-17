@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +37,9 @@ fun InboxComposable(
                 Text("Notifications", fontWeight = FontWeight.Bold)
             })
     }) { padding ->
-        Box(
+        PullToRefreshBox(
+            isRefreshing = viewModel.inboxState.refreshing,
+            onRefresh = {viewModel.refresh()},
             modifier = Modifier
                 .padding(padding)
                 .padding(16.dp)

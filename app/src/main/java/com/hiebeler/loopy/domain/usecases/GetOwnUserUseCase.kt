@@ -9,10 +9,7 @@ import kotlinx.coroutines.flow.flow
 class GetOwnUserUseCase(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(): Flow<Resource<Account>> = flow {
-        emit(Resource.Loading())
-        userRepository.getOwnUser().collect { res ->
-            emit(res)
-        }
+    operator fun invoke(): Flow<Resource<Account>> {
+        return userRepository.getOwnUser()
     }
 }

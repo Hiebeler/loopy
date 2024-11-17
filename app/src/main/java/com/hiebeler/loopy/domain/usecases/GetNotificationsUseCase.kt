@@ -10,15 +10,7 @@ import kotlinx.coroutines.flow.flow
 class GetNotificationsUseCase(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(nextCursor: String = ""): Flow<Resource<NotificationsWrapper?>> = flow {
-        emit(Resource.Loading())
-        userRepository.getNotifications(nextCursor).collect { result ->
-            if (result is Resource.Success) {
-                val res: NotificationsWrapper? = result.data
-                emit(Resource.Success(res))
-            } else {
-                emit(Resource.Error(result.message ?: "Something went wrong"))
-            }
-        }
+    operator fun invoke(nextCursor: String = ""): Flow<Resource<NotificationsWrapper>> {
+        return userRepository.getNotifications(nextCursor)
     }
 }

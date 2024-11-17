@@ -35,6 +35,11 @@ class OtherProfileViewModel @Inject constructor(
         loadPostsOfUser(userId, refreshing)
     }
 
+    fun refresh() {
+        loadUser(profileState.user!!.id, true)
+        loadPostsOfUser(profileState.user!!.id, true)
+    }
+
     private fun loadUser(userId: String, refreshing: Boolean) {
         getUserUseCase(userId).onEach { result ->
             profileState = when (result) {

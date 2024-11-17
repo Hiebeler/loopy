@@ -26,6 +26,10 @@ class HomeViewModel @Inject constructor(
         getItemsFirstLoad(false)
     }
 
+    fun refresh() {
+        getItemsFirstLoad(true)
+    }
+
     private fun getItemsFirstLoad(refreshing: Boolean) {
         getForYouFeedUseCase().onEach { result ->
             feedState = when (result) {

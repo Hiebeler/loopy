@@ -10,15 +10,7 @@ import kotlinx.coroutines.flow.flow
 class GetForYouFeedUseCase(
     private val timelineRepository: TimelineRepository
 ) {
-    operator fun invoke(maxPostId: String = ""): Flow<Resource<FeedWrapper?>> = flow {
-        emit(Resource.Loading())
-        timelineRepository.getForYouFeed(maxPostId).collect { timeline ->
-            if (timeline is Resource.Success) {
-                val res: FeedWrapper? = timeline.data
-                emit(Resource.Success(res))
-            } else {
-                emit(Resource.Error(timeline.message ?: "Something went wrong"))
-            }
-        }
+    operator fun invoke(maxPostId: String = ""): Flow<Resource<FeedWrapper>> {
+        return timelineRepository.getForYouFeed(maxPostId)
     }
 }

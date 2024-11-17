@@ -9,15 +9,7 @@ import kotlinx.coroutines.flow.flow
 class GetFollowingUseCase(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(accountId: String = ""): Flow<Resource<FollowersWrapper?>> = flow {
-        emit(Resource.Loading())
-        userRepository.getFollowing(accountId).collect { result ->
-            if (result is Resource.Success) {
-                val res: FollowersWrapper? = result.data
-                emit(Resource.Success(res))
-            } else {
-                emit(Resource.Error(result.message ?: "Something went wrong"))
-            }
-        }
+    operator fun invoke(accountId: String = ""): Flow<Resource<FollowersWrapper>> {
+        return userRepository.getFollowing(accountId)
     }
 }

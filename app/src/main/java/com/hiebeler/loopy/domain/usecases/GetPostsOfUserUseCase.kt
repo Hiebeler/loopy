@@ -11,15 +11,7 @@ import kotlinx.coroutines.flow.flow
 class GetPostsOfUserUseCase(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(accountId: String = ""): Flow<Resource<FeedWrapper?>> = flow {
-        emit(Resource.Loading())
-        userRepository.getPostsOfUser(accountId).collect { timeline ->
-            if (timeline is Resource.Success) {
-                val res: FeedWrapper? = timeline.data
-                emit(Resource.Success(res))
-            } else {
-                emit(Resource.Error(timeline.message ?: "Something went wrong"))
-            }
-        }
+    operator fun invoke(accountId: String = ""): Flow<Resource<FeedWrapper>> {
+        return userRepository.getPostsOfUser(accountId)
     }
 }

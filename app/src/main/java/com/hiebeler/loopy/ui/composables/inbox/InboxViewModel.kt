@@ -27,6 +27,11 @@ class InboxViewModel @Inject constructor(
         getItemsFirstLoad(false)
     }
 
+    fun refresh() {
+        inboxState = inboxState.copy(refreshing = true)
+        getItemsFirstLoad(true)
+    }
+
     private fun getItemsFirstLoad(refreshing: Boolean) {
         getNotificationsUseCase().onEach { result ->
             inboxState = when (result) {
