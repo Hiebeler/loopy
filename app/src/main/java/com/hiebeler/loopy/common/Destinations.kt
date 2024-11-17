@@ -3,10 +3,12 @@ package com.hiebeler.loopy.common
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MailOutline
@@ -30,4 +32,7 @@ sealed class Destinations(
         route = "inbox_screen", icon = Icons.Outlined.MailOutline, activeIcon = Icons.Filled.MailOutline
     )
 
+    data object Explore : Destinations(
+        route = "explore_screen", icon = Icons.Outlined.Explore, activeIcon = Icons.Filled.Explore
+    )
 }

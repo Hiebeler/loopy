@@ -32,6 +32,7 @@ import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import com.hiebeler.loopy.common.Destinations
 import com.hiebeler.loopy.domain.model.LoginData
 import com.hiebeler.loopy.domain.usecases.GetCurrentLoginDataUseCase
+import com.hiebeler.loopy.ui.composables.explore.ExploreComposable
 import com.hiebeler.loopy.ui.composables.home.HomeComposable
 import com.hiebeler.loopy.ui.composables.inbox.InboxComposable
 import com.hiebeler.loopy.ui.composables.profile.own_profile.ProfileComposable
@@ -112,6 +113,10 @@ fun NavigationGraph(navController: NavHostController) {
             InboxComposable(navController = navController)
         }
 
+        composable(Destinations.Explore.route) {
+            ExploreComposable(navController = navController)
+        }
+
         composable(Destinations.Profile.route) { navBackStackEntry ->
             val uId = navBackStackEntry.arguments?.getString("userid")
             uId?.let { id ->
@@ -126,6 +131,7 @@ fun NavigationGraph(navController: NavHostController) {
 fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         Destinations.HomeScreen,
+        Destinations.Explore,
         Destinations.Inbox,
         Destinations.OwnProfileScreen,
     )
