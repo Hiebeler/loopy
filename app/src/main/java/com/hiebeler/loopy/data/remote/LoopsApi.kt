@@ -23,7 +23,9 @@ interface LoopsApi {
     fun getOwnUser(): Call<AccountDto>
 
     @GET("api/v0/notifications/self")
-    fun getNotifications(): Call<NotificationsWrapperDto>
+    fun getNotifications(
+        @Query("cursor") nextCursor: String
+    ): Call<NotificationsWrapperDto>
 
     @GET("api/v0/user/id/{accountid}")
     fun getUser(

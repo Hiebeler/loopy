@@ -63,9 +63,9 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getNotifications(): Flow<Resource<NotificationsWrapper>> {
+    override fun getNotifications(nextCursor: String): Flow<Resource<NotificationsWrapper>> {
         return NetworkCall<NotificationsWrapper, NotificationsWrapperDto>().makeCall(
-            loopsApi.getNotifications()
+            loopsApi.getNotifications(nextCursor)
         )
     }
 }

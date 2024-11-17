@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.hiebeler.loopy.ui.composables.InfiniteListHandler
 import com.hiebeler.loopy.ui.composables.profile.UserRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,6 +28,7 @@ fun InboxComposable(
     navController: NavController,
     viewModel: InboxViewModel = hiltViewModel(key = "inbox-viewmodel-key")
 ) {
+    val lazyListState = rememberLazyListState()
     Scaffold(topBar = {
         CenterAlignedTopAppBar(windowInsets = WindowInsets(0, 0, 0, 0),
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
@@ -39,7 +42,7 @@ fun InboxComposable(
                 .padding(16.dp)
         ) {
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            LazyColumn(state = lazyListState, verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(viewModel.inboxState.notifications) {
                     InboxItemComposable(it, navController)
                 }
@@ -47,6 +50,9 @@ fun InboxComposable(
 
             if (viewModel.inboxState.error.isNotEmpty()) {
                 Text(viewModel.inboxState.error)
+            }
+            InfiniteListHandler(lazyListState) {
+                viewModel.loadMoreNotifications()
             }
         }
     }

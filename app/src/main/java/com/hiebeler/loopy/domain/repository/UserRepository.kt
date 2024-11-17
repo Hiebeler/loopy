@@ -14,5 +14,5 @@ interface UserRepository {
     fun getPostsOfOwnUser(accountId: String): Flow<Resource<FeedWrapper>>
     fun getFollowers(accountId: String): Flow<Resource<FollowersWrapper>>
     fun getFollowing(accountId: String): Flow<Resource<FollowersWrapper>>
-    fun getNotifications(): Flow<Resource<NotificationsWrapper>>
+    fun getNotifications(nextCursor: String): Flow<Resource<NotificationsWrapper>>
 }

@@ -66,33 +66,35 @@ class InboxViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun loadMorePosts(nextCursor: String) {
-//        getForYouFeedUseCase(maxPostId = nextCursor).onEach { result ->
-//            inboxState = when (result) {
-//                is Resource.Success -> {
-//                    InboxState(
-//                        inbox = FeedWrapper(data = inboxState.inbox!!.data + result.data!!.data, links = result.data.links, meta = result.data.meta),
-//                        error = "",
-//                        isLoading = false,
-//                        refreshing = false
-//                    )
-//                }
-//
-//                is Resource.Error -> {
-//                    InboxState(
-//                        inbox = inboxState.inbox,
-//                        error = result.message ?: "An unexpected error occurred",
-//                        isLoading = false,
-//                        refreshing = false
-//                    )
-//                }
-//
-//                is Resource.Loading -> {
-//                    InboxState(
-//                        inbox = inboxState.inbox, error = "", isLoading = true, refreshing = false
-//                    )
-//                }
-//            }
-//        }.launchIn(viewModelScope)
+    fun loadMoreNotifications() {
+        if (inboxState.nextCursor.isBlank()) {
+            return
+        }
+        getNotificationsUseCase(inboxState.nextCursor).onEach { result ->
+            inboxState = when (result) {
+                is Resource.Success -> {
+                    InboxState(
+                        notifications = inboxState.notifications + result.data!!.data,
+                        nextCursor = result.data.nextCursor,
+                        previousCursor = result.data.previousCursor,
+                        error = "",
+                        isLoading = false,
+                        refreshing = false
+                    )
+                }
+
+                is Resource.Error -> {
+                   inboxState.copy(error = result.message ?: "An unexpected error occurred", isLoading = false, refreshing = false)
+                }
+
+                is Resource.Loading -> {
+                    inboxState.copy(
+                        error = "",
+                        isLoading = true,
+                        refreshing = false
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }
