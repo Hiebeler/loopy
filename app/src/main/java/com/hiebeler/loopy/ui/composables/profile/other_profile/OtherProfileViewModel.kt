@@ -7,9 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
-import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
+import com.hiebeler.loopy.domain.usecases.FollowUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetUserUseCase
+import com.hiebeler.loopy.domain.usecases.UnfollowUserUseCase
 import com.hiebeler.loopy.ui.composables.post.PostsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -19,13 +20,15 @@ import javax.inject.Inject
 @HiltViewModel
 class OtherProfileViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val getPostsOfUserUseCase: GetPostsOfUserUseCase
+    private val getPostsOfUserUseCase: GetPostsOfUserUseCase,
+    private val followAccountUseCase: FollowUserUseCase,
+    private val unfollowAccountUseCase: UnfollowUserUseCase
 ) : ViewModel() {
 
 
     var profileState by mutableStateOf(UserState())
     var postsState by mutableStateOf(PostsState())
-
+    var followIsLoading by mutableStateOf(false)
 
     fun loadData(userId: String, refreshing: Boolean) {
         loadUser(userId, refreshing)
@@ -71,4 +74,49 @@ class OtherProfileViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+
+    fun followAccount(userId: String) {
+        followIsLoading = true
+        followAccountUseCase(userId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    val updatedUser = profileState.user?.copy(following = result.data!!.following)
+                    profileState = profileState.copy(user = updatedUser)
+
+                    followIsLoading = false
+                }
+
+                is Resource.Error -> {
+                    followIsLoading = false
+                }
+
+                is Resource.Loading -> {
+                    followIsLoading = true
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun unfollowAccount(userId: String) {
+        followIsLoading = true
+        unfollowAccountUseCase(userId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    val updatedUser = profileState.user?.copy(following = result.data!!.following)
+                    profileState = profileState.copy(user = updatedUser)
+
+                    followIsLoading = false
+                }
+
+                is Resource.Error -> {
+                    followIsLoading = false
+                }
+
+                is Resource.Loading -> {
+                    followIsLoading = true
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
 }

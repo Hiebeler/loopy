@@ -23,13 +23,15 @@ data class AccountDto(
             username = username,
             bio = bio ?: "",
             avatar = avatar ?: "",
-            created_at = created_at ?: "",
-            follower_count = follower_count ?: 0,
-            following_count = following_count ?: 0,
-            is_blocking = is_blocking ?: false,
-            is_owner = is_owner ?: false,
-            post_count = post_count ?: 0,
-            url = url ?: ""
+            createdAt = created_at ?: "",
+            followerCount = follower_count ?: 0,
+            followingCount = following_count ?: 0,
+            isBlocking = is_blocking ?: false,
+            isOwner = is_owner ?: false,
+            postCount = post_count ?: 0,
+            url = url ?: "",
+            following = false,
+            followedBy = false
         )
     }
 }

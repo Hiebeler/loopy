@@ -10,4 +10,6 @@
     <string name="followed_you">followed you</string>
     <string name="commented_on_video">commented on your video</string>
     <string name="liked_your_post">liked your video</string>
+    <string name="follow">follow</string>
+    <string name="unfollow">unfollow</string>
 </resources>

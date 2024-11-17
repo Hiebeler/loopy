@@ -3,12 +3,15 @@ package com.hiebeler.loopy.data.repository
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.data.remote.LoopsApi
 import com.hiebeler.loopy.data.remote.dto.AccountDto
+import com.hiebeler.loopy.data.remote.dto.AccountWrapperDto
 import com.hiebeler.loopy.data.remote.dto.FeedWrapperDto
 import com.hiebeler.loopy.data.remote.dto.FollowersWrapperDto
+import com.hiebeler.loopy.data.remote.dto.MetaAccountDto
 import com.hiebeler.loopy.data.remote.dto.NotificationsWrapperDto
 import com.hiebeler.loopy.domain.model.Account
 import com.hiebeler.loopy.domain.model.FeedWrapper
 import com.hiebeler.loopy.domain.model.FollowersWrapper
+import com.hiebeler.loopy.domain.model.MetaAccount
 import com.hiebeler.loopy.domain.model.NotificationsWrapper
 import com.hiebeler.loopy.domain.repository.UserRepository
 import com.hiebeler.loopy.utils.NetworkCall
@@ -26,7 +29,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override fun getUser(accountId: String): Flow<Resource<Account>> {
-        return NetworkCall<Account, AccountDto>().makeCall(
+        return NetworkCall<Account, AccountWrapperDto>().makeCall(
             loopsApi.getUser(
                 accountId
             )
@@ -66,6 +69,18 @@ class UserRepositoryImpl @Inject constructor(
     override fun getNotifications(nextCursor: String): Flow<Resource<NotificationsWrapper>> {
         return NetworkCall<NotificationsWrapper, NotificationsWrapperDto>().makeCall(
             loopsApi.getNotifications(nextCursor)
+        )
+    }
+
+    override fun followUser(accountId: String): Flow<Resource<MetaAccount>> {
+        return NetworkCall<MetaAccount,MetaAccountDto>().makeCall(
+            loopsApi.followUser(accountId)
+        )
+    }
+
+    override fun unfollowUser(accountId: String): Flow<Resource<MetaAccount>> {
+        return NetworkCall<MetaAccount,MetaAccountDto>().makeCall(
+            loopsApi.unfollowUser(accountId)
         )
     }
 }

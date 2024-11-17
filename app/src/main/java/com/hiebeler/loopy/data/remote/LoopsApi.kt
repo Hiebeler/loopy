@@ -1,9 +1,11 @@
 package com.hiebeler.loopy.data.remote
 
 import com.hiebeler.loopy.data.remote.dto.AccountDto
+import com.hiebeler.loopy.data.remote.dto.AccountWrapperDto
 import com.hiebeler.loopy.data.remote.dto.FeedWrapperDto
 import com.hiebeler.loopy.data.remote.dto.FollowersWrapperDto
 import com.hiebeler.loopy.data.remote.dto.LoginModelDto
+import com.hiebeler.loopy.data.remote.dto.MetaAccountDto
 import com.hiebeler.loopy.data.remote.dto.NotificationsWrapperDto
 import com.hiebeler.loopy.domain.model.FollowersWrapper
 import retrofit2.Call
@@ -27,10 +29,10 @@ interface LoopsApi {
         @Query("cursor") nextCursor: String
     ): Call<NotificationsWrapperDto>
 
-    @GET("api/v0/user/id/{accountid}")
+    @GET("api/v0/user/id/{accountid}?ext=1")
     fun getUser(
         @Path("accountid") accountId: String
-    ): Call<AccountDto>
+    ): Call<AccountWrapperDto>
 
     @GET("api/v0/user/followers/byId/{accountid}")
     fun getFollowers(
@@ -49,6 +51,16 @@ interface LoopsApi {
 
     @GET("api/v0/user/self/videos")
     fun getPostsOfOwnUser(): Call<FeedWrapperDto>
+
+    @POST("api/v0/follow/{accountid}")
+    fun followUser(
+        @Path("accountid") accountId: String
+    ): Call<MetaAccountDto>
+
+    @POST("api/v0/unfollow/{accountid}")
+    fun unfollowUser(
+        @Path("accountid") accountId: String
+    ): Call<MetaAccountDto>
 
     @POST("/auth/start?device_name=Loopy&build=4")
     fun login(

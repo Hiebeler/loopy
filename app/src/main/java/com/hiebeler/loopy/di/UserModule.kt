@@ -1,6 +1,7 @@
 package com.hiebeler.loopy.di
 
 import com.hiebeler.loopy.domain.repository.UserRepository
+import com.hiebeler.loopy.domain.usecases.FollowUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetFollowersUseCase
 import com.hiebeler.loopy.domain.usecases.GetFollowingUseCase
 import com.hiebeler.loopy.domain.usecases.GetNotificationsUseCase
@@ -8,6 +9,7 @@ import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfOwnUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetUserUseCase
+import com.hiebeler.loopy.domain.usecases.UnfollowUserUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,4 +61,16 @@ class UserModule {
     fun provideGetPostsOfOwnUserUseCase(
         repository: UserRepository
     ): GetPostsOfOwnUserUseCase = GetPostsOfOwnUserUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideFollowUserUseCase(
+        repository: UserRepository
+    ): FollowUserUseCase = FollowUserUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideUnfollowUserUseCase(
+        repository: UserRepository
+    ): UnfollowUserUseCase = UnfollowUserUseCase(repository)
 }

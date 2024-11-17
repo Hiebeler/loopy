@@ -11,16 +11,18 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +34,7 @@ import com.hiebeler.loopy.domain.model.LoginData
 import com.hiebeler.loopy.domain.usecases.GetCurrentLoginDataUseCase
 import com.hiebeler.loopy.ui.composables.home.HomeComposable
 import com.hiebeler.loopy.ui.composables.inbox.InboxComposable
-import com.hiebeler.loopy.ui.composables.own_profile.ProfileComposable
+import com.hiebeler.loopy.ui.composables.profile.own_profile.ProfileComposable
 import com.hiebeler.loopy.ui.composables.profile.other_profile.OtherProfileComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
 import com.hiebeler.loopy.utils.Navigate
@@ -132,19 +134,29 @@ fun BottomBar(navController: NavHostController) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
-        screens.forEach { screen ->
-
+        screens.forEach { screen: Destinations ->
             NavigationBarItem(icon = {
-                Icon(imageVector = screen.icon!!, contentDescription = "")
-            }, label = {
-                Text(
-                    text = stringResource(id = screen.label),
-                    maxLines = 1,
-                    overflow = TextOverflow.Visible
-                )
-            }, selected = currentRoute == screen.route, onClick = {
-                Navigate.navigateWithPopUp(screen.route, navController)
-            })
+                if (currentRoute == screen.route) {
+                    Icon(
+                        imageVector = screen.activeIcon!!,
+                        modifier = Modifier.size(32.dp),
+                        contentDescription = ""
+                    )
+                } else {
+                    Icon(
+                        imageVector = screen.icon!!,
+                        modifier = Modifier.size(32.dp),
+                        contentDescription = ""
+                    )
+                }
+            },
+                selected = currentRoute == screen.route,
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.inverseSurface, indicatorColor = Color.Transparent
+                ),
+                onClick = {
+                    Navigate.navigateWithPopUp(screen.route, navController)
+                })
         }
     }
 }

@@ -6,14 +6,16 @@ import kotlinx.serialization.Serializable
 data class Account(
     val avatar: String,
     val bio: String,
-    val created_at: String,
-    val follower_count: Int,
-    val following_count: Int,
+    val createdAt: String,
+    val followerCount: Int,
+    val followingCount: Int,
     val id: String,
-    val is_blocking: Boolean,
-    val is_owner: Boolean,
+    val isBlocking: Boolean,
+    val isOwner: Boolean,
     val name: String,
-    val post_count: Int,
+    val postCount: Int,
     val url: String,
-    val username: String
+    val username: String,
+    val followedBy: Boolean,
+    var following: Boolean
 )

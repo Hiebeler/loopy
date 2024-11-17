@@ -1,4 +1,4 @@
-package com.hiebeler.loopy.ui.composables.own_profile
+package com.hiebeler.loopy.ui.composables.profile.own_profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.SwitchAccount
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,12 +65,26 @@ fun ProfileComposable(
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(windowInsets = WindowInsets(0, 0, 0, 0),
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-            title = {
-                Text(viewModel.ownProfileState.user?.username ?: "", fontWeight = FontWeight.Bold)
+            title = {},
+            navigationIcon = {
+                IconButton(onClick = {
+
+                }) {
+                    Icon(
+                        imageVector = Icons.Outlined.SwitchAccount,
+                        contentDescription = "account switch dropdown",
+                        Modifier.size(24.dp)
+                    )
+                }
             },
             actions = {
+                IconButton(onClick = {
 
+                }) {
+                    Icon(
+                        imageVector = Icons.Outlined.MoreVert, contentDescription = ""
+                    )
+                }
             })
     }) { padding ->
         Box(
@@ -85,22 +101,10 @@ fun ProfileComposable(
             ) {
                 item(span = { GridItemSpan(3) }) {
                     if (viewModel.ownProfileState.user != null) {
-
-                        Column(
-                            Modifier
-                                .clip(
-                                    RoundedCornerShape(
-                                        bottomStart = 32.dp, bottomEnd = 32.dp
-                                    )
-                                )
-                                .background(MaterialTheme.colorScheme.surfaceContainer)
-                                .padding(24.dp)
-                        ) {
-                            if (viewModel.ownProfileState.isLoading) {
-                                CircularProgressIndicator()
-                            } else if (viewModel.ownProfileState.user != null) {
-                                ProfileTopSection(viewModel.ownProfileState.user!!, navController)
-                            }
+                        if (viewModel.ownProfileState.isLoading) {
+                            CircularProgressIndicator()
+                        } else if (viewModel.ownProfileState.user != null) {
+                            ProfileTopSection(viewModel.ownProfileState.user!!, navController)
                         }
                     }
                 }

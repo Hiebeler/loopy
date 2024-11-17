@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -23,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +39,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -44,13 +49,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.hiebeler.loopy.R
 import com.hiebeler.loopy.domain.model.ViewEnum
 import com.hiebeler.loopy.ui.composables.InfinitePosts
 import com.hiebeler.loopy.ui.composables.own_profile.OtherProfileViewModel
@@ -78,9 +86,7 @@ fun OtherProfileComposable(
     Scaffold(topBar = {
         CenterAlignedTopAppBar(windowInsets = WindowInsets(0, 0, 0, 0),
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-            title = {
-                Text(viewModel.profileState.user?.username ?: "", fontWeight = FontWeight.Bold)
-            },
+            title = {},
             navigationIcon = {
                 IconButton(onClick = {
                     navController.popBackStack()
@@ -92,7 +98,7 @@ fun OtherProfileComposable(
             },
             actions = {
                 IconButton(onClick = {
-                    showShareSheet = true
+
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.MoreVert, contentDescription = ""
@@ -101,27 +107,67 @@ fun OtherProfileComposable(
             })
     }) { padding ->
 
-        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .padding(horizontal = 12.dp)
+                .fillMaxSize()
+        ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-               // modifier = Modifier.pullRefresh(pullRefreshState),
+                // modifier = Modifier.pullRefresh(pullRefreshState),
                 state = lazyGridState
             ) {
                 item(span = { GridItemSpan(3) }) {
                     if (viewModel.profileState.user != null) {
-
-                        Column(
-                            Modifier
-                                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
-                                .background(MaterialTheme.colorScheme.surfaceContainer)
-                                .padding(24.dp)
-                        ) {
-                            if (viewModel.profileState.isLoading) {
-                                CircularProgressIndicator()
-                            } else if (viewModel.profileState.user != null) {
+                        if (viewModel.profileState.isLoading) {
+                            CircularProgressIndicator()
+                        } else if (viewModel.profileState.user != null) {
+                            Column {
                                 ProfileTopSection(viewModel.profileState.user!!, navController)
+                                Spacer(Modifier.height(12.dp))
+                                Button(
+                                    onClick = {
+                                        if (viewModel.profileState.user!!.following) {
+                                            viewModel.unfollowAccount(viewModel.profileState.user!!.id)
+                                        } else {
+                                            viewModel.followAccount(viewModel.profileState.user!!.id)
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(12.dp),
+                                    contentPadding = PaddingValues(12.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = if (viewModel.profileState.user!!.following) {
+                                            MaterialTheme.colorScheme.secondaryContainer
+                                        } else {
+                                            MaterialTheme.colorScheme.primary
+                                        },
+                                        contentColor = if (viewModel.profileState.user!!.following) {
+                                            MaterialTheme.colorScheme.onSecondaryContainer
+                                        } else {
+                                            MaterialTheme.colorScheme.onPrimary
+                                        }
+                                    )
+                                ) {
+                                    if (viewModel.followIsLoading) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(20.dp), color = Color.White
+                                        )
+                                    } else {
+                                        Text(
+                                            text = stringResource(
+                                                if (viewModel.profileState.user!!.following) {
+                                                    R.string.unfollow
+                                                } else {
+                                                    R.string.follow
+                                                }
+                                            )
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -132,9 +178,10 @@ fun OtherProfileComposable(
     }
 
     if (showShareSheet && viewModel.profileState.user != null) {
-        ModalBottomSheet(onDismissRequest = {
-            showShareSheet = false
-        }, sheetState = shareSheetState
+        ModalBottomSheet(
+            onDismissRequest = {
+                showShareSheet = false
+            }, sheetState = shareSheetState
         ) {
             ShareSheetComposable(viewModel.profileState.user!!)
         }

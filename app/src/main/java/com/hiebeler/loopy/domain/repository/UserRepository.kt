@@ -4,6 +4,7 @@ import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.model.Account
 import com.hiebeler.loopy.domain.model.FeedWrapper
 import com.hiebeler.loopy.domain.model.FollowersWrapper
+import com.hiebeler.loopy.domain.model.MetaAccount
 import com.hiebeler.loopy.domain.model.NotificationsWrapper
 import kotlinx.coroutines.flow.Flow
 
@@ -15,4 +16,6 @@ interface UserRepository {
     fun getFollowers(accountId: String): Flow<Resource<FollowersWrapper>>
     fun getFollowing(accountId: String): Flow<Resource<FollowersWrapper>>
     fun getNotifications(nextCursor: String): Flow<Resource<NotificationsWrapper>>
+    fun followUser(accountId: String): Flow<Resource<MetaAccount>>
+    fun unfollowUser(accountId: String): Flow<Resource<MetaAccount>>
 }
