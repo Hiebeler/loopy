@@ -7,4 +7,7 @@
     <string name="password">Password</string>
     <string name="i_don_t_have_an_account">I don\'t have an account</string>
     <string name="inbox">Inbox</string>
+    <string name="followed_you">followed you</string>
+    <string name="commented_on_video">commented on your video</string>
+    <string name="liked_your_post">liked your video</string>
 </resources>

@@ -41,12 +41,11 @@ fun InboxComposable(
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(viewModel.inboxState.notifications) {
-                    UserRow(it.actor, navController)
+                    InboxItemComposable(it, navController)
                 }
             }
 
             if (viewModel.inboxState.error.isNotEmpty()) {
-
                 Text(viewModel.inboxState.error)
             }
         }
