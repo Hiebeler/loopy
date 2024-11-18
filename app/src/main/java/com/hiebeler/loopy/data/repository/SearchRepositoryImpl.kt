@@ -12,10 +12,10 @@ import javax.inject.Inject
 class SearchRepositoryImpl @Inject constructor(
     private val loopsApi: LoopsApi
 ) : SearchRepository {
-    override fun search(query: String): Flow<Resource<SearchWrapper>> {
+    override fun search(query: String, nextCursor: String): Flow<Resource<SearchWrapper>> {
         return NetworkCall<SearchWrapper, SearchWrapperDto>().makeCall(
             loopsApi.search(
-                query
+                query, nextCursor
             )
         )
     }

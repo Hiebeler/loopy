@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
+import com.hiebeler.loopy.domain.model.SearchWrapper
 import com.hiebeler.loopy.domain.usecases.SearchUseCase
-import com.hiebeler.loopy.ui.composables.home.ForYouFeedState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -51,6 +51,29 @@ class ExploreViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     SearchState(isLoading = true)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun loadMoreSearchResults(query: String) {
+        if (searchState.searchResult == null || searchState.searchResult!!.nextCursor.isBlank()) return
+        searchUseCase(query, searchState.searchResult!!.nextCursor).onEach { result ->
+            searchState = when (result) {
+                is Resource.Success -> {
+                    SearchState(searchResult = SearchWrapper(
+                        users = searchState.searchResult!!.users + result.data!!.users,
+                        nextCursor = result.data.nextCursor,
+                        previousCursor = result.data.previousCursor
+                    ))
+                }
+
+                is Resource.Error -> {
+                    SearchState(searchResult = searchState.searchResult, error = result.message ?: "An unexpected error occurred")
+                }
+
+                is Resource.Loading -> {
+                    SearchState(searchResult = searchState.searchResult, isLoading = true)
                 }
             }
         }.launchIn(viewModelScope)

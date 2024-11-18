@@ -8,7 +8,6 @@ import com.hiebeler.loopy.data.remote.dto.LoginModelDto
 import com.hiebeler.loopy.data.remote.dto.MetaAccountDto
 import com.hiebeler.loopy.data.remote.dto.NotificationsWrapperDto
 import com.hiebeler.loopy.data.remote.dto.SearchWrapperDto
-import com.hiebeler.loopy.domain.model.FollowersWrapper
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -70,6 +69,7 @@ interface LoopsApi {
 
     @POST("api/v0.5/search/users")
     fun search(
-        @Query("q") query: String
+        @Query("q") query: String,
+        @Query("cursor") nextCursor: String = ""
     ): Call<SearchWrapperDto>
 }

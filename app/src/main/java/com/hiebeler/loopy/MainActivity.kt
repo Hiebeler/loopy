@@ -35,8 +35,8 @@ import com.hiebeler.loopy.domain.usecases.GetCurrentLoginDataUseCase
 import com.hiebeler.loopy.ui.composables.explore.ExploreComposable
 import com.hiebeler.loopy.ui.composables.home.HomeComposable
 import com.hiebeler.loopy.ui.composables.inbox.InboxComposable
-import com.hiebeler.loopy.ui.composables.profile.own_profile.ProfileComposable
 import com.hiebeler.loopy.ui.composables.profile.other_profile.OtherProfileComposable
+import com.hiebeler.loopy.ui.composables.profile.own_profile.ProfileComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
 import com.hiebeler.loopy.utils.Navigate
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,7 +55,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         runBlocking {
             val loginData: LoginData? = currentLoginDataUseCase()
             if (loginData == null || loginData.accessToken.isBlank() || loginData.baseUrl.isBlank()) {
