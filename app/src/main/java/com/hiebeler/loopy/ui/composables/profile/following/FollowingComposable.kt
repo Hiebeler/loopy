@@ -1,4 +1,4 @@
-package com.hiebeler.loopy.ui.composables.profile.followers
+package com.hiebeler.loopy.ui.composables.profile.following
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -22,10 +22,10 @@ import com.hiebeler.loopy.R
 import com.hiebeler.loopy.ui.composables.profile.UserRow
 
 @Composable
-fun FollowersComposable(
+fun FollowingComposable(
     userId: String,
     navController: NavController,
-    viewModel: FollowersViewModel = hiltViewModel(key = "follower-viewmodel-$userId-key")
+    viewModel: FollowingViewModel = hiltViewModel(key = "following-viewmodel-$userId-key")
 ) {
 
     LaunchedEffect(Unit) {
@@ -40,10 +40,12 @@ fun FollowersComposable(
         LazyColumn {
             item {
                 Text(
-                    text = stringResource(R.string.followers),
+                    text = stringResource(R.string.following),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp)
                 )
             }
 

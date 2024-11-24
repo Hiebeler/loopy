@@ -15,5 +15,7 @@
     <string name="explore">Explore</string>
     <string name="search">Search</string>
     <string name="followers">Followers</string>
+    <string name="following">Following</string>
     <string name="logout">Logout</string>
+    <string name="posts">Posts</string>
 </resources>

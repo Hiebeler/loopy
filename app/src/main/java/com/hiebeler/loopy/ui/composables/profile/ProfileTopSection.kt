@@ -26,14 +26,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.hiebeler.loopy.R
 import com.hiebeler.loopy.domain.model.Account
 import com.hiebeler.loopy.ui.composables.profile.followers.FollowersComposable
+import com.hiebeler.loopy.ui.composables.profile.following.FollowingComposable
 import sv.lib.squircleshape.SquircleShape
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +44,9 @@ import sv.lib.squircleshape.SquircleShape
 fun ProfileTopSection(user: Account, navController: NavController) {
     val followerSheetState = rememberModalBottomSheetState()
     var showFollowerSheet by remember { mutableStateOf(false) }
+
+    val followingSheetState = rememberModalBottomSheetState()
+    var showFollowingSheet by remember { mutableStateOf(false) }
 
     Column(
         Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
@@ -56,11 +62,26 @@ fun ProfileTopSection(user: Account, navController: NavController) {
         )
         Spacer(Modifier.height(24.dp))
 
-        Column(Modifier.padding(horizontal = 30.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(user.username, textAlign = TextAlign.Center, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Column(
+            Modifier
+                .padding(horizontal = 30.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                user.username,
+                textAlign = TextAlign.Center,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
             Spacer(Modifier.height(8.dp))
             if (user.bio.isNotBlank()) {
-                Text(user.bio, textAlign = TextAlign.Center, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    user.bio,
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
             Spacer(Modifier.height(12.dp))
             Row(
@@ -71,19 +92,28 @@ fun ProfileTopSection(user: Account, navController: NavController) {
                         showFollowerSheet = true
                     }) {
                     Text(
-                        user.followerCount.toString(), fontSize = 22.sp, fontWeight = FontWeight.Bold
+                        user.followerCount.toString(),
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
                     )
                     Text(
-                        "Follower", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
+                        stringResource(R.string.followers),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable {
+                        showFollowingSheet = true
+                    }) {
                     Text(
-                        user.followingCount.toString(), fontSize = 22.sp, fontWeight = FontWeight.Bold
+                        user.followingCount.toString(),
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
                     )
                     Text(
-                        "Following",
+                        stringResource(R.string.following),
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -94,19 +124,25 @@ fun ProfileTopSection(user: Account, navController: NavController) {
                         user.postCount.toString(), fontSize = 22.sp, fontWeight = FontWeight.Bold
                     )
                     Text(
-                        "Posts",
+                        stringResource(R.string.posts),
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
         }
-
-
     }
 
 
-
+    if (showFollowingSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showFollowingSheet = false
+            }, sheetState = followingSheetState
+        ) {
+            FollowingComposable(user.id, navController)
+        }
+    }
 
 
     if (showFollowerSheet) {
