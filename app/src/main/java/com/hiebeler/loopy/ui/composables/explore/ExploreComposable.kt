@@ -95,7 +95,7 @@ fun ExploreComposable(navController: NavController, viewModel: ExploreViewModel 
             ) {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
                     viewModel.searchState.searchResult?.let { searchResult ->
-                        searchResult.users.forEach { user ->
+                        searchResult.data.forEach { user ->
                             CustomUser(user, navController)
                         }
                     }
@@ -112,7 +112,7 @@ fun ExploreComposable(navController: NavController, viewModel: ExploreViewModel 
                     state = lazyListSearchState,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    items(searchResult.users) { user ->
+                    items(searchResult.data) { user ->
                         CustomUser(user, navController)
                     }
                 }

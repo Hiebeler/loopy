@@ -7,7 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
-import com.hiebeler.loopy.domain.model.FeedWrapper
+import com.hiebeler.loopy.domain.model.Notification
+import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.domain.usecases.GetForYouFeedUseCase
 import com.hiebeler.loopy.domain.usecases.GetNotificationsUseCase
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
@@ -37,20 +38,13 @@ class InboxViewModel @Inject constructor(
             inboxState = when (result) {
                 is Resource.Success -> {
                     InboxState(
-                        notifications = result.data?.data ?: emptyList(),
-                        nextCursor = result.data?.nextCursor ?: "",
-                        previousCursor = result.data?.nextCursor ?: "",
-                        error = "",
-                        isLoading = false,
-                        refreshing = false
+                        wrapper = result.data!!, error = "", isLoading = false, refreshing = false
                     )
                 }
 
                 is Resource.Error -> {
                     InboxState(
-                        notifications = inboxState.notifications,
-                        nextCursor = inboxState.nextCursor,
-                        previousCursor = inboxState.previousCursor,
+                        wrapper = inboxState.wrapper,
                         error = result.message ?: "An unexpected error occurred",
                         isLoading = false,
                         refreshing = false
@@ -59,9 +53,7 @@ class InboxViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     InboxState(
-                        notifications = inboxState.notifications,
-                        nextCursor = inboxState.nextCursor,
-                        previousCursor = inboxState.previousCursor,
+                        wrapper = inboxState.wrapper,
                         error = "",
                         isLoading = true,
                         refreshing = refreshing
@@ -72,31 +64,32 @@ class InboxViewModel @Inject constructor(
     }
 
     fun loadMoreNotifications() {
-        if (inboxState.nextCursor.isBlank()) {
+        if (inboxState.wrapper.nextCursor == null) {
             return
         }
-        getNotificationsUseCase(inboxState.nextCursor).onEach { result ->
+        getNotificationsUseCase(inboxState.wrapper.nextCursor!!).onEach { result ->
             inboxState = when (result) {
                 is Resource.Success -> {
                     InboxState(
-                        notifications = inboxState.notifications + result.data!!.data,
-                        nextCursor = result.data.nextCursor,
-                        previousCursor = result.data.previousCursor,
-                        error = "",
+                        wrapper = Wrapper(
+                            inboxState.wrapper.data + result.data!!.data,
+                            result.data.previousCursor,
+                            result.data.nextCursor
+                        ), error = "", isLoading = false, refreshing = false
+                    )
+                }
+
+                is Resource.Error -> {
+                    inboxState.copy(
+                        error = result.message ?: "An unexpected error occurred",
                         isLoading = false,
                         refreshing = false
                     )
                 }
 
-                is Resource.Error -> {
-                   inboxState.copy(error = result.message ?: "An unexpected error occurred", isLoading = false, refreshing = false)
-                }
-
                 is Resource.Loading -> {
                     inboxState.copy(
-                        error = "",
-                        isLoading = true,
-                        refreshing = false
+                        error = "", isLoading = true, refreshing = false
                     )
                 }
             }

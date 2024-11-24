@@ -7,7 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
-import com.hiebeler.loopy.domain.model.FeedWrapper
+import com.hiebeler.loopy.domain.model.Post
+import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.domain.usecases.GetForYouFeedUseCase
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,10 +36,7 @@ class HomeViewModel @Inject constructor(
             feedState = when (result) {
                 is Resource.Success -> {
                     ForYouFeedState(
-                        feed = result.data,
-                        error = "",
-                        isLoading = false,
-                        refreshing = false
+                        feed = result.data, error = "", isLoading = false, refreshing = false
                     )
                 }
 
@@ -65,10 +63,11 @@ class HomeViewModel @Inject constructor(
             feedState = when (result) {
                 is Resource.Success -> {
                     ForYouFeedState(
-                        feed = FeedWrapper(data = feedState.feed!!.data + result.data!!.data, links = result.data.links, meta = result.data.meta),
-                        error = "",
-                        isLoading = false,
-                        refreshing = false
+                        feed = Wrapper(
+                            data = feedState.feed!!.data + result.data!!.data,
+                            previousCursor = result.data.previousCursor,
+                            nextCursor = result.data.nextCursor
+                        ), error = "", isLoading = false, refreshing = false
                     )
                 }
 

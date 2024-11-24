@@ -9,10 +9,10 @@ import com.hiebeler.loopy.data.remote.dto.FollowersWrapperDto
 import com.hiebeler.loopy.data.remote.dto.MetaAccountDto
 import com.hiebeler.loopy.data.remote.dto.NotificationsWrapperDto
 import com.hiebeler.loopy.domain.model.Account
-import com.hiebeler.loopy.domain.model.FeedWrapper
-import com.hiebeler.loopy.domain.model.FollowersWrapper
 import com.hiebeler.loopy.domain.model.MetaAccount
-import com.hiebeler.loopy.domain.model.NotificationsWrapper
+import com.hiebeler.loopy.domain.model.Notification
+import com.hiebeler.loopy.domain.model.Post
+import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.domain.repository.UserRepository
 import com.hiebeler.loopy.utils.NetworkCall
 import kotlinx.coroutines.flow.Flow
@@ -36,38 +36,38 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getPostsOfUser(accountId: String): Flow<Resource<FeedWrapper>> {
-        return NetworkCall<FeedWrapper, FeedWrapperDto>().makeCall(
+    override fun getPostsOfUser(accountId: String): Flow<Resource<Wrapper<Post>>> {
+        return NetworkCall<Wrapper<Post>, FeedWrapperDto>().makeCall(
             loopsApi.getPostsOfUser(
                 accountId
             )
         )
     }
 
-    override fun getPostsOfOwnUser(accountId: String): Flow<Resource<FeedWrapper>> {
-        return NetworkCall<FeedWrapper, FeedWrapperDto>().makeCall(
+    override fun getPostsOfOwnUser(accountId: String): Flow<Resource<Wrapper<Post>>> {
+        return NetworkCall<Wrapper<Post>, FeedWrapperDto>().makeCall(
             loopsApi.getPostsOfOwnUser()
         )
     }
 
-    override fun getFollowers(accountId: String): Flow<Resource<FollowersWrapper>> {
-        return NetworkCall<FollowersWrapper, FollowersWrapperDto>().makeCall(
+    override fun getFollowers(accountId: String): Flow<Resource<Wrapper<Account>>> {
+        return NetworkCall<Wrapper<Account>, FollowersWrapperDto>().makeCall(
             loopsApi.getFollowers(
                 accountId
             )
         )
     }
 
-    override fun getFollowing(accountId: String): Flow<Resource<FollowersWrapper>> {
-        return NetworkCall<FollowersWrapper, FollowersWrapperDto>().makeCall(
+    override fun getFollowing(accountId: String): Flow<Resource<Wrapper<Account>>> {
+        return NetworkCall<Wrapper<Account>, FollowersWrapperDto>().makeCall(
             loopsApi.getFollowing(
                 accountId
             )
         )
     }
 
-    override fun getNotifications(nextCursor: String): Flow<Resource<NotificationsWrapper>> {
-        return NetworkCall<NotificationsWrapper, NotificationsWrapperDto>().makeCall(
+    override fun getNotifications(nextCursor: String): Flow<Resource<Wrapper<Notification>>> {
+        return NetworkCall<Wrapper<Notification>, NotificationsWrapperDto>().makeCall(
             loopsApi.getNotifications(nextCursor)
         )
     }

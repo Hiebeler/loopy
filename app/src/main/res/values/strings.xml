@@ -18,4 +18,5 @@
     <string name="following">Following</string>
     <string name="logout">Logout</string>
     <string name="posts">Posts</string>
+    <string name="open_in_browser">Open in browser</string>
 </resources>

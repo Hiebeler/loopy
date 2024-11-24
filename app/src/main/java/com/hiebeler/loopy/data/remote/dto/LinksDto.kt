@@ -1,6 +1,5 @@
 package com.hiebeler.loopy.data.remote.dto
 
-import com.hiebeler.loopy.domain.model.FeedWrapper
 import com.hiebeler.loopy.domain.model.Links
 
 data class LinksDto(

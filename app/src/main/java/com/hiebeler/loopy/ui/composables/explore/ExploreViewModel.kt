@@ -6,7 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
-import com.hiebeler.loopy.domain.model.SearchWrapper
+import com.hiebeler.loopy.domain.model.Account
+import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.domain.usecases.SearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase
-): ViewModel() {
+) : ViewModel() {
     var searchState by mutableStateOf(SearchState())
 
     fun textInputChange(text: String) {
@@ -57,19 +58,24 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun loadMoreSearchResults(query: String) {
-        if (searchState.searchResult == null || searchState.searchResult!!.nextCursor.isBlank()) return
-        searchUseCase(query, searchState.searchResult!!.nextCursor).onEach { result ->
+        if (searchState.searchResult == null || searchState.searchResult!!.nextCursor == null) return
+        searchUseCase(query, searchState.searchResult!!.nextCursor!!).onEach { result ->
             searchState = when (result) {
                 is Resource.Success -> {
-                    SearchState(searchResult = SearchWrapper(
-                        users = searchState.searchResult!!.users + result.data!!.users,
-                        nextCursor = result.data.nextCursor,
-                        previousCursor = result.data.previousCursor
-                    ))
+                    SearchState(
+                        searchResult = Wrapper(
+                            searchState.searchResult!!.data + result.data!!.data,
+                            result.data.previousCursor,
+                            result.data.nextCursor
+                        )
+                    )
                 }
 
                 is Resource.Error -> {
-                    SearchState(searchResult = searchState.searchResult, error = result.message ?: "An unexpected error occurred")
+                    SearchState(
+                        searchResult = searchState.searchResult,
+                        error = result.message ?: "An unexpected error occurred"
+                    )
                 }
 
                 is Resource.Loading -> {

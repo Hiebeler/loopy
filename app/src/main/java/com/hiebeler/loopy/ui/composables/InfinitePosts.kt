@@ -16,16 +16,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.hiebeler.loopy.domain.model.FeedWrapper
 import com.hiebeler.loopy.domain.model.Post
 import com.hiebeler.loopy.domain.model.ViewEnum
+import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.ui.composables.post.LargePost
 import com.hiebeler.loopy.ui.composables.post.SmallPost
 
 @Composable
 fun InfinitePosts(
     view: ViewEnum,
-    feedWrapper: FeedWrapper?,
+    feedWrapper: Wrapper<Post>?,
     isLoading: Boolean,
     error: String,
     loadMorePosts: (cursor: String) -> Unit,
@@ -48,7 +48,7 @@ fun InfinitePosts(
 
 @Composable
 private fun InfinitePostsGrid(
-    feedWrapper: FeedWrapper?,
+    feedWrapper: Wrapper<Post>?,
     isLoading: Boolean,
     error: String,
     loadMorePosts: (cursor: String) -> Unit,
@@ -70,7 +70,7 @@ private fun InfinitePostsGrid(
 
 @Composable
 private fun InfinitePostsTimeline(
-    feedWrapper: FeedWrapper?,
+    feedWrapper: Wrapper<Post>?,
     isLoading: Boolean,
     error: String,
     loadMorePosts: (cursor: String) -> Unit,
@@ -85,9 +85,9 @@ private fun InfinitePostsTimeline(
             if (isLoading || feedWrapper == null) {
                 CircularProgressIndicator()
             } else {
-                if (pageIndex >= feedWrapper.data.size - 2 && feedWrapper.data.isNotEmpty() && feedWrapper.meta.nextCursor != null) {
+                if (pageIndex >= feedWrapper.data.size - 2 && feedWrapper.data.isNotEmpty() && feedWrapper.nextCursor != null) {
                     LaunchedEffect(pageIndex) {
-                        feedWrapper.meta.nextCursor.let {
+                        feedWrapper.nextCursor.let {
                             loadMorePosts(it)
                         }
                     }
