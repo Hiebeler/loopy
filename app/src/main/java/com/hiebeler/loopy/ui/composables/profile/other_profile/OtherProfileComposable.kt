@@ -111,8 +111,8 @@ fun OtherProfileComposable(
     }) { padding ->
 
         PullToRefreshBox(
-            isRefreshing = viewModel.profileState.refreshing || viewModel.postsState.refreshing,
-            onRefresh = {viewModel.refresh()},
+            isRefreshing = viewModel.profileState.isRefreshing || viewModel.postsState.refreshing,
+            onRefresh = { viewModel.refresh() },
             modifier = Modifier
                 .padding(padding)
                 .padding(horizontal = 12.dp)
@@ -125,31 +125,31 @@ fun OtherProfileComposable(
                 state = lazyGridState
             ) {
                 item(span = { GridItemSpan(3) }) {
-                    if (viewModel.profileState.user != null) {
+                    if (viewModel.profileState.data != null) {
                         if (viewModel.profileState.isLoading) {
                             CircularProgressIndicator()
-                        } else if (viewModel.profileState.user != null) {
+                        } else if (viewModel.profileState.data != null) {
                             Column {
-                                ProfileTopSection(viewModel.profileState.user!!, navController)
+                                ProfileTopSection(viewModel.profileState.data!!, navController)
                                 Spacer(Modifier.height(12.dp))
                                 Button(
                                     onClick = {
-                                        if (viewModel.profileState.user!!.following) {
-                                            viewModel.unfollowAccount(viewModel.profileState.user!!.id)
+                                        if (viewModel.profileState.data!!.following) {
+                                            viewModel.unfollowAccount(viewModel.profileState.data!!.id)
                                         } else {
-                                            viewModel.followAccount(viewModel.profileState.user!!.id)
+                                            viewModel.followAccount(viewModel.profileState.data!!.id)
                                         }
                                     },
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(12.dp),
                                     contentPadding = PaddingValues(12.dp),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = if (viewModel.profileState.user!!.following) {
+                                        containerColor = if (viewModel.profileState.data!!.following) {
                                             MaterialTheme.colorScheme.secondaryContainer
                                         } else {
                                             MaterialTheme.colorScheme.primary
                                         },
-                                        contentColor = if (viewModel.profileState.user!!.following) {
+                                        contentColor = if (viewModel.profileState.data!!.following) {
                                             MaterialTheme.colorScheme.onSecondaryContainer
                                         } else {
                                             MaterialTheme.colorScheme.onPrimary
@@ -163,7 +163,7 @@ fun OtherProfileComposable(
                                     } else {
                                         Text(
                                             text = stringResource(
-                                                if (viewModel.profileState.user!!.following) {
+                                                if (viewModel.profileState.data!!.following) {
                                                     R.string.unfollow
                                                 } else {
                                                     R.string.follow
@@ -181,13 +181,13 @@ fun OtherProfileComposable(
         }
     }
 
-    if (showShareSheet && viewModel.profileState.user != null) {
+    if (showShareSheet && viewModel.profileState.data != null) {
         ModalBottomSheet(
             onDismissRequest = {
                 showShareSheet = false
             }, sheetState = shareSheetState
         ) {
-            ShareSheetComposable(viewModel.profileState.user!!)
+            ShareSheetComposable(viewModel.profileState.data!!)
         }
     }
 

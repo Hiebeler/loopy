@@ -28,13 +28,13 @@ fun HomeComposable(
 ) {
     Scaffold { padding ->
         PullToRefreshBox(
-            isRefreshing = viewModel.feedState.refreshing,
+            isRefreshing = viewModel.feedState.isRefreshing,
             onRefresh = { viewModel.refresh() },
             modifier = Modifier.padding()
         ) {
             InfinitePosts(
                 ViewEnum.Timeline,
-                viewModel.feedState.feed,
+                viewModel.feedState.data,
                 viewModel.feedState.isLoading,
                 viewModel.feedState.error,
                 { cursor -> viewModel.loadMorePosts(cursor) },

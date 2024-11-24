@@ -7,12 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
+import com.hiebeler.loopy.domain.model.Account
+import com.hiebeler.loopy.domain.model.State
 import com.hiebeler.loopy.domain.usecases.FollowUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetUserUseCase
 import com.hiebeler.loopy.domain.usecases.UnfollowUserUseCase
 import com.hiebeler.loopy.ui.composables.post.PostsState
-import com.hiebeler.loopy.ui.composables.profile.own_profile.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -27,7 +28,7 @@ class OtherProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    var profileState by mutableStateOf(UserState())
+    var profileState by mutableStateOf(State<Account?>(null))
     var postsState by mutableStateOf(PostsState())
     var followIsLoading by mutableStateOf(false)
 
@@ -37,24 +38,27 @@ class OtherProfileViewModel @Inject constructor(
     }
 
     fun refresh() {
-        loadUser(profileState.user!!.id, true)
-        loadPostsOfUser(profileState.user!!.id, true)
+        loadUser(profileState.data!!.id, true)
+        loadPostsOfUser(profileState.data!!.id, true)
     }
 
     private fun loadUser(userId: String, refreshing: Boolean) {
         getUserUseCase(userId).onEach { result ->
             profileState = when (result) {
                 is Resource.Success -> {
-                    UserState(user = result.data)
+                    State(data = result.data)
                 }
 
                 is Resource.Error -> {
-                    UserState(error = result.message ?: "An unexpected error occurred")
+                    State(
+                        error = result.message ?: "An unexpected error occurred",
+                        data = profileState.data
+                    )
                 }
 
                 is Resource.Loading -> {
-                    UserState(
-                        isLoading = true, user = profileState.user, refreshing = refreshing
+                    State(
+                        isLoading = true, data = profileState.data, isRefreshing = refreshing
                     )
                 }
             }
@@ -86,8 +90,8 @@ class OtherProfileViewModel @Inject constructor(
         followAccountUseCase(userId).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    val updatedUser = profileState.user?.copy(following = result.data!!.following)
-                    profileState = profileState.copy(user = updatedUser)
+                    val updatedUser = profileState.data?.copy(following = result.data!!.following)
+                    profileState = profileState.copy(data = updatedUser)
 
                     followIsLoading = false
                 }
@@ -108,8 +112,8 @@ class OtherProfileViewModel @Inject constructor(
         unfollowAccountUseCase(userId).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    val updatedUser = profileState.user?.copy(following = result.data!!.following)
-                    profileState = profileState.copy(user = updatedUser)
+                    val updatedUser = profileState.data?.copy(following = result.data!!.following)
+                    profileState = profileState.copy(data = updatedUser)
 
                     followIsLoading = false
                 }

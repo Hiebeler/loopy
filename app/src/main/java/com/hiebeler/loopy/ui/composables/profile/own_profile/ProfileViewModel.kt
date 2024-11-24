@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
+import com.hiebeler.loopy.domain.model.Account
+import com.hiebeler.loopy.domain.model.State
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfOwnUserUseCase
 import com.hiebeler.loopy.ui.composables.post.PostsState
@@ -22,7 +24,7 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    var ownProfileState by mutableStateOf(UserState())
+    var ownProfileState by mutableStateOf(State<Account?>(null))
     var postsState by mutableStateOf(PostsState())
 
     init {
@@ -39,16 +41,19 @@ class ProfileViewModel @Inject constructor(
         getOwnUserUseCase().onEach { result ->
             ownProfileState = when (result) {
                 is Resource.Success -> {
-                    UserState(user = result.data)
+                    State(data = result.data)
                 }
 
                 is Resource.Error -> {
-                    UserState(error = result.message ?: "An unexpected error occurred")
+                    State(
+                        error = result.message ?: "An unexpected error occurred",
+                        data = ownProfileState.data
+                    )
                 }
 
                 is Resource.Loading -> {
-                    UserState(
-                        isLoading = true, user = ownProfileState.user, refreshing = refreshing
+                    State(
+                        isLoading = true, data = ownProfileState.data, isRefreshing = refreshing
                     )
                 }
             }

@@ -89,7 +89,7 @@ fun ProfileComposable(
             })
     }) { padding ->
         PullToRefreshBox(
-            isRefreshing = viewModel.ownProfileState.refreshing || viewModel.postsState.refreshing,
+            isRefreshing = viewModel.ownProfileState.isRefreshing || viewModel.postsState.refreshing,
             onRefresh = { viewModel.refresh() },
             modifier = Modifier
                 .padding(padding)
@@ -103,11 +103,11 @@ fun ProfileComposable(
                 state = lazyGridState
             ) {
                 item(span = { GridItemSpan(3) }) {
-                    if (viewModel.ownProfileState.user != null) {
+                    if (viewModel.ownProfileState.data != null) {
                         if (viewModel.ownProfileState.isLoading) {
                             CircularProgressIndicator()
-                        } else if (viewModel.ownProfileState.user != null) {
-                            ProfileTopSection(viewModel.ownProfileState.user!!, navController)
+                        } else if (viewModel.ownProfileState.data != null) {
+                            ProfileTopSection(viewModel.ownProfileState.data!!, navController)
                         }
                     }
                 }
@@ -116,13 +116,13 @@ fun ProfileComposable(
         }
     }
 
-    if (showShareSheet && viewModel.ownProfileState.user != null) {
+    if (showShareSheet && viewModel.ownProfileState.data != null) {
         ModalBottomSheet(
             onDismissRequest = {
                 showShareSheet = false
             }, sheetState = shareSheetState
         ) {
-            PreferencesComposable(viewModel.ownProfileState.user!!, navController)
+            PreferencesComposable(viewModel.ownProfileState.data!!, navController)
         }
     }
 }
