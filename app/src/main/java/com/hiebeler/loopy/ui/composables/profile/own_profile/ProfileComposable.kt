@@ -80,7 +80,7 @@ fun ProfileComposable(
             },
             actions = {
                 IconButton(onClick = {
-
+                    showShareSheet = true
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.MoreVert, contentDescription = ""
@@ -90,7 +90,7 @@ fun ProfileComposable(
     }) { padding ->
         PullToRefreshBox(
             isRefreshing = viewModel.ownProfileState.refreshing || viewModel.postsState.refreshing,
-            onRefresh = {viewModel.refresh()},
+            onRefresh = { viewModel.refresh() },
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
@@ -122,7 +122,7 @@ fun ProfileComposable(
                 showShareSheet = false
             }, sheetState = shareSheetState
         ) {
-            ShareSheetComposable(viewModel.ownProfileState.user!!)
+            PreferencesComposable(viewModel.ownProfileState.user!!, navController)
         }
     }
 }

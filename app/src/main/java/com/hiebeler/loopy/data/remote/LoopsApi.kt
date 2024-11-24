@@ -62,7 +62,7 @@ interface LoopsApi {
         @Path("accountid") accountId: String
     ): Call<MetaAccountDto>
 
-    @POST("/auth/start?device_name=Loopy&build=4")
+    @POST("/auth/start?device_name=Loopy&build=10")
     fun login(
         @Query("email") email: String, @Query("password") password: String
     ): Call<LoginModelDto>

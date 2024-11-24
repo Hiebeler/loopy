@@ -37,6 +37,7 @@ import com.hiebeler.loopy.ui.composables.home.HomeComposable
 import com.hiebeler.loopy.ui.composables.inbox.InboxComposable
 import com.hiebeler.loopy.ui.composables.profile.other_profile.OtherProfileComposable
 import com.hiebeler.loopy.ui.composables.profile.own_profile.ProfileComposable
+import com.hiebeler.loopy.ui.composables.settings.SettingsComposable
 import com.hiebeler.loopy.ui.theme.LoopyTheme
 import com.hiebeler.loopy.utils.Navigate
 import dagger.hilt.android.AndroidEntryPoint
@@ -114,6 +115,10 @@ fun NavigationGraph(navController: NavHostController) {
 
         composable(Destinations.Explore.route) {
             ExploreComposable(navController = navController)
+        }
+
+        composable(Destinations.Settings.route) {
+            SettingsComposable(navController = navController)
         }
 
         composable(Destinations.Profile.route) { navBackStackEntry ->

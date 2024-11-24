@@ -7,11 +7,13 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.hiebeler.loopy.R
 
@@ -34,5 +36,9 @@ sealed class Destinations(
 
     data object Explore : Destinations(
         route = "explore_screen", icon = Icons.Outlined.Explore, activeIcon = Icons.Filled.Explore
+    )
+
+    data object Settings : Destinations(
+        route = "settings_screen", icon = Icons.Outlined.Settings, activeIcon = Icons.Filled.Settings
     )
 }

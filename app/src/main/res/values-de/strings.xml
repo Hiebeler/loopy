@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Loopy</string>
+    <string name="home">Home</string>
+    <string name="profile">Profil</string>
+    <string name="server_url">Server URL</string>
+    <string name="email">Email</string>
+    <string name="password">Passwort</string>
+    <string name="i_don_t_have_an_account">Ich habe noch keinen Account</string>
+    <string name="inbox">Inbox</string>
+    <string name="followed_you">Folgt dir jetzt</string>
+    <string name="commented_on_video">hat dein Video kommentiert</string>
+    <string name="liked_your_post">gefällt dein Video</string>
+    <string name="follow">folgen</string>
+    <string name="unfollow">entfolgen</string>
+    <string name="explore">Entdecken</string>
+    <string name="search">Suche</string>
+    <string name="followers">Followers</string>
+    <string name="logout">Ausloggen</string>
+</resources>
