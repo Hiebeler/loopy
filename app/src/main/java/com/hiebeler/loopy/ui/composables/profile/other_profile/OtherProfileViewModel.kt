@@ -12,6 +12,7 @@ import com.hiebeler.loopy.domain.usecases.GetPostsOfUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetUserUseCase
 import com.hiebeler.loopy.domain.usecases.UnfollowUserUseCase
 import com.hiebeler.loopy.ui.composables.post.PostsState
+import com.hiebeler.loopy.ui.composables.profile.own_profile.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfOwnUserUseCase
-import com.hiebeler.loopy.ui.composables.own_profile.UserState
 import com.hiebeler.loopy.ui.composables.post.PostsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn

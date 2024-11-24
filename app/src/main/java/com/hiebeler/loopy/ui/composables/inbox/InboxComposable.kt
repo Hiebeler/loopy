@@ -33,7 +33,7 @@ fun InboxComposable(
             })
     }) { padding ->
         PullToRefreshBox(
-            isRefreshing = viewModel.inboxState.refreshing,
+            isRefreshing = viewModel.inboxState.isRefreshing,
             onRefresh = {viewModel.refresh()},
             modifier = Modifier
                 .padding(padding)
@@ -41,7 +41,7 @@ fun InboxComposable(
         ) {
 
             LazyColumn(state = lazyListState, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                items(viewModel.inboxState.wrapper.data) {
+                items(viewModel.inboxState.data.data) {
                     InboxItemComposable(it, navController)
                 }
             }

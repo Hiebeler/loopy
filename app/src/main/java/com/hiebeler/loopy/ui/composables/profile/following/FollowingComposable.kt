@@ -49,7 +49,7 @@ fun FollowingComposable(
                 )
             }
 
-            viewModel.followerState.followers?.let { followers ->
+            viewModel.followerState.data?.let { followers ->
                 items(followers.data) { user ->
                     UserRow(user, navController)
                     Spacer(Modifier.height(12.dp))

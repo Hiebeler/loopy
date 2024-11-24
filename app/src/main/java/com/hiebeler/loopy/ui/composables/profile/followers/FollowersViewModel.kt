@@ -7,9 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
+import com.hiebeler.loopy.domain.model.Account
+import com.hiebeler.loopy.domain.model.State
+import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.domain.usecases.GetFollowersUseCase
-import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
-import com.hiebeler.loopy.ui.composables.own_profile.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,7 +22,7 @@ class FollowersViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    var followerState by mutableStateOf(FollowersState())
+    var followerState by mutableStateOf(State<Wrapper<Account>>(Wrapper()))
 
     fun loadData(accountId: String, refreshing: Boolean) {
         getFollowers(accountId, refreshing)
@@ -31,16 +32,19 @@ class FollowersViewModel @Inject constructor(
         getFollowersUseCase(accountId).onEach { result ->
             followerState = when (result) {
                 is Resource.Success -> {
-                    FollowersState(followers = result.data)
+                    State(data = result.data!!)
                 }
 
                 is Resource.Error -> {
-                    FollowersState(error = result.message ?: "An unexpected error occurred")
+                    State(
+                        error = result.message ?: "An unexpected error occurred",
+                        data = followerState.data
+                    )
                 }
 
                 is Resource.Loading -> {
-                    FollowersState(
-                        isLoading = true, followers = followerState.followers, refreshing = refreshing
+                    State(
+                        isLoading = true, data = followerState.data, isRefreshing = refreshing
                     )
                 }
             }

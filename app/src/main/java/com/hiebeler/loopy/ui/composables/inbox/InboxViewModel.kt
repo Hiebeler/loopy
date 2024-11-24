@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.model.Notification
+import com.hiebeler.loopy.domain.model.State
 import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.domain.usecases.GetForYouFeedUseCase
 import com.hiebeler.loopy.domain.usecases.GetNotificationsUseCase
@@ -22,14 +23,14 @@ class InboxViewModel @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase
 ) : ViewModel() {
 
-    var inboxState by mutableStateOf(InboxState())
+    var inboxState by mutableStateOf(State<Wrapper<Notification>>(Wrapper()))
 
     init {
         getItemsFirstLoad(false)
     }
 
     fun refresh() {
-        inboxState = inboxState.copy(refreshing = true)
+        inboxState = inboxState.copy(isRefreshing = true)
         getItemsFirstLoad(true)
     }
 
@@ -37,26 +38,26 @@ class InboxViewModel @Inject constructor(
         getNotificationsUseCase().onEach { result ->
             inboxState = when (result) {
                 is Resource.Success -> {
-                    InboxState(
-                        wrapper = result.data!!, error = "", isLoading = false, refreshing = false
+                    State(
+                        data = result.data!!, error = "", isLoading = false, isRefreshing = false
                     )
                 }
 
                 is Resource.Error -> {
-                    InboxState(
-                        wrapper = inboxState.wrapper,
+                    State(
+                        data = inboxState.data,
                         error = result.message ?: "An unexpected error occurred",
                         isLoading = false,
-                        refreshing = false
+                        isRefreshing = false
                     )
                 }
 
                 is Resource.Loading -> {
-                    InboxState(
-                        wrapper = inboxState.wrapper,
+                    State(
+                        data = inboxState.data,
                         error = "",
                         isLoading = true,
-                        refreshing = refreshing
+                        isRefreshing = refreshing
                     )
                 }
             }
@@ -64,18 +65,18 @@ class InboxViewModel @Inject constructor(
     }
 
     fun loadMoreNotifications() {
-        if (inboxState.wrapper.nextCursor == null) {
+        if (inboxState.data.nextCursor == null) {
             return
         }
-        getNotificationsUseCase(inboxState.wrapper.nextCursor!!).onEach { result ->
+        getNotificationsUseCase(inboxState.data.nextCursor!!).onEach { result ->
             inboxState = when (result) {
                 is Resource.Success -> {
-                    InboxState(
-                        wrapper = Wrapper(
-                            inboxState.wrapper.data + result.data!!.data,
+                    State(
+                        data = Wrapper(
+                            inboxState.data.data + result.data!!.data,
                             result.data.previousCursor,
                             result.data.nextCursor
-                        ), error = "", isLoading = false, refreshing = false
+                        ), error = "", isLoading = false, isRefreshing = false
                     )
                 }
 
@@ -83,13 +84,13 @@ class InboxViewModel @Inject constructor(
                     inboxState.copy(
                         error = result.message ?: "An unexpected error occurred",
                         isLoading = false,
-                        refreshing = false
+                        isRefreshing = false
                     )
                 }
 
                 is Resource.Loading -> {
                     inboxState.copy(
-                        error = "", isLoading = true, refreshing = false
+                        error = "", isLoading = true, isRefreshing = false
                     )
                 }
             }

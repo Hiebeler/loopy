@@ -1,4 +1,4 @@
-package com.hiebeler.loopy.ui.composables.own_profile
+package com.hiebeler.loopy.ui.composables.profile.own_profile
 
 import com.hiebeler.loopy.domain.model.Account
 
