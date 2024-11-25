@@ -104,3 +104,8 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
 }
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
