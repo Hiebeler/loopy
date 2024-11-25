@@ -36,10 +36,10 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getPostsOfUser(accountId: String): Flow<Resource<Wrapper<Post>>> {
+    override fun getPostsOfUser(accountId: String, nextCursor: String): Flow<Resource<Wrapper<Post>>> {
         return NetworkCall<Wrapper<Post>, FeedWrapperDto>().makeCall(
             loopsApi.getPostsOfUser(
-                accountId
+                accountId, nextCursor
             )
         )
     }

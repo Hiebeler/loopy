@@ -46,7 +46,8 @@ interface LoopsApi {
 
     @GET("api/v0/user/videos/{accountid}")
     fun getPostsOfUser(
-        @Path("accountid") accountId: String
+        @Path("accountid") accountId: String,
+        @Query("cursor") nextCursor: String
     ): Call<FeedWrapperDto>
 
     @GET("api/v0/user/self/videos")

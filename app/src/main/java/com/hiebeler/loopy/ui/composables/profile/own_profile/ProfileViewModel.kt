@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.model.Account
+import com.hiebeler.loopy.domain.model.Post
 import com.hiebeler.loopy.domain.model.State
+import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfOwnUserUseCase
 import com.hiebeler.loopy.ui.composables.post.PostsState
@@ -78,5 +80,31 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun loadMorePosts() {
+        postsState.feed?.nextCursor?.let {
+            getPostsOfOwnUserUseCase(it).onEach { result ->
+                postsState = when (result) {
+                    is Resource.Success -> {
+                        postsState.copy(
+                            isLoading = false, feed = Wrapper<Post>(
+                                nextCursor = result.data!!.nextCursor,
+                                previousCursor = result.data.previousCursor,
+                                data = postsState.feed!!.data + result.data.data
+                            )
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        postsState.copy(error = "an error occurred!")
+                    }
+
+                    is Resource.Loading -> {
+                        postsState.copy()
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
     }
 }

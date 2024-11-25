@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     fun getOwnUser(): Flow<Resource<Account>>
     fun getUser(accountId: String): Flow<Resource<Account>>
-    fun getPostsOfUser(accountId: String): Flow<Resource<Wrapper<Post>>>
+    fun getPostsOfUser(accountId: String, nextCursor: String): Flow<Resource<Wrapper<Post>>>
     fun getPostsOfOwnUser(accountId: String): Flow<Resource<Wrapper<Post>>>
     fun getFollowers(accountId: String): Flow<Resource<Wrapper<Account>>>
     fun getFollowing(accountId: String): Flow<Resource<Wrapper<Account>>>

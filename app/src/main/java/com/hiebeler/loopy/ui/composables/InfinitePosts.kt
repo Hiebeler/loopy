@@ -61,7 +61,7 @@ private fun InfinitePostsGrid(
     ) {
         if (feedWrapper != null) {
             items(feedWrapper.data) { post ->
-                SmallPost(post)
+                SmallPost(post, Modifier)
             }
         }
     }

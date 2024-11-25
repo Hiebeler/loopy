@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.hiebeler.loopy.common.Resource
 import com.hiebeler.loopy.domain.model.Account
 import com.hiebeler.loopy.domain.model.State
+import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.domain.usecases.FollowUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetUserUseCase
@@ -47,6 +48,7 @@ class OtherProfileViewModel @Inject constructor(
             profileState = when (result) {
                 is Resource.Success -> {
                     State(data = result.data)
+
                 }
 
                 is Resource.Error -> {
@@ -64,6 +66,34 @@ class OtherProfileViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+
+    fun loadMorePosts() {
+        if (profileState.data?.id == null || postsState.feed?.nextCursor == null) {
+            return
+        }
+        getPostsOfUserUseCase(profileState.data!!.id, postsState.feed!!.nextCursor!!).onEach { result ->
+            postsState = when (result) {
+                is Resource.Success -> {
+                    postsState.copy(
+                        isLoading = false, feed = Wrapper(
+                            nextCursor = result.data!!.nextCursor,
+                            previousCursor = result.data.previousCursor,
+                            data = postsState.feed!!.data + result.data.data
+                        )
+                    )
+                }
+
+                is Resource.Error -> {
+                    postsState.copy(error = "an error occurred!")
+                }
+
+                is Resource.Loading -> {
+                    postsState.copy()
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
 
     private fun loadPostsOfUser(userId: String, refreshing: Boolean) {
         getPostsOfUserUseCase(userId).onEach { result ->
