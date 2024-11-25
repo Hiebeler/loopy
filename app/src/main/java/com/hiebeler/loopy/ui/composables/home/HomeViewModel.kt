@@ -82,7 +82,7 @@ class HomeViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     State(
-                        data = feedState.data, error = "", isLoading = true, isRefreshing = false
+                        data = feedState.data, error = "", isLoading = false, isRefreshing = false
                     )
                 }
             }
