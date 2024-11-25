@@ -1,7 +1,6 @@
 package com.hiebeler.loopy.ui.composables.post
 
 import android.app.ActionBar.LayoutParams
-import androidx.annotation.OptIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,20 +40,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.hiebeler.loopy.domain.model.Post
-import com.hiebeler.loopy.ui.composables.profile.followers.FollowersComposable
 import com.hiebeler.loopy.utils.Navigate
 import sv.lib.squircleshape.SquircleShape
 
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LargePost(post: Post, navController: NavController) {
+fun LargePost(post: Post, active: Boolean, navController: NavController) {
 
     val context = LocalContext.current
 
@@ -64,7 +62,15 @@ fun LargePost(post: Post, navController: NavController) {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(post.media.srcUrl))
             prepare()
-            playWhenReady = true
+            playWhenReady = false
+        }
+    }
+
+    LaunchedEffect(active) {
+        if (active) {
+            exoPlayer.play()
+        } else {
+            exoPlayer.pause()
         }
     }
 

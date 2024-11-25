@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -100,8 +99,10 @@ private fun InfinitePostsTimeline(
                         CircularProgressIndicator()
                     }
                 }
+
                 item?.let {
-                    LargePost(item, navController)
+                    val active = pageIndex == pagerState.currentPage
+                    LargePost(item, active, navController)
                 }
             }
         }
