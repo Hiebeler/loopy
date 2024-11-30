@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.daniebeler.pfpixelix.ui.composables.profile.own_profile.AccountSwitchBottomSheet
 import com.hiebeler.loopy.ui.composables.InfiniteListHandler
 import com.hiebeler.loopy.ui.composables.profile.PostsWrapperComposable
 import com.hiebeler.loopy.ui.composables.profile.ProfileTopSection
@@ -41,13 +42,14 @@ fun ProfileComposable(
     val lazyListState = rememberLazyListState()
     val shareSheetState = rememberModalBottomSheetState()
     var showShareSheet by remember { mutableStateOf(false) }
+    var showMultipleAccountsBottomSheet by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(windowInsets = WindowInsets(0, 0, 0, 0),
             title = {},
             navigationIcon = {
                 IconButton(onClick = {
-
+                    showMultipleAccountsBottomSheet = true
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.SwitchAccount,
@@ -74,8 +76,7 @@ fun ProfileComposable(
                 .fillMaxSize()
         ) {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                state = lazyListState
+                verticalArrangement = Arrangement.spacedBy(4.dp), state = lazyListState
             ) {
                 item {
                     if (viewModel.ownProfileState.data != null) {
@@ -103,6 +104,12 @@ fun ProfileComposable(
             }, sheetState = shareSheetState
         ) {
             PreferencesComposable(viewModel.ownProfileState.data!!, navController)
+        }
+    } else if (showMultipleAccountsBottomSheet && viewModel.ownProfileState.data != null) {
+        ModalBottomSheet(onDismissRequest = { showMultipleAccountsBottomSheet = false }) {
+            AccountSwitchBottomSheet(closeBottomSheet = {
+                showMultipleAccountsBottomSheet = false
+            }, ownProfileViewModel = viewModel)
         }
     }
 }

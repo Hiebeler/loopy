@@ -18,3 +18,22 @@ data class LoginData(
     val baseUrl: String = "",
     val accessToken: String = "",
 )
+
+fun loginDataToAccount(loginData: LoginData): Account {
+    return Account(
+        username = loginData.username,
+        avatar = loginData.avatar,
+        url = loginData.baseUrl,
+        id = loginData.accountId,
+        createdAt = "",
+        followingCount = 0,
+        following = false,
+        followerCount = 0,
+        followedBy = false,
+        isBlocking = false,
+        postCount = 0,
+        isOwner = false,
+        name = loginData.displayName ?: "",
+        bio = ""
+    )
+}

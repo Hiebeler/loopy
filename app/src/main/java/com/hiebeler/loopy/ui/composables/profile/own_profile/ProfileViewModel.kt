@@ -34,9 +34,13 @@ class ProfileViewModel @Inject constructor(
         loadPosts(false)
     }
 
-    fun refresh() {
-        getOwnUser(true)
-        loadPosts(true)
+    fun refresh(refreshing: Boolean = true) {
+        getOwnUser(refreshing)
+        loadPosts(refreshing)
+    }
+
+    fun updateAccountSwitch() {
+        refresh(false)
     }
 
     private fun getOwnUser(refreshing: Boolean) {

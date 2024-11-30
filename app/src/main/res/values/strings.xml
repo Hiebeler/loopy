@@ -19,4 +19,11 @@
     <string name="logout">Logout</string>
     <string name="posts">Posts</string>
     <string name="open_in_browser">Open in browser</string>
+    <string name="current_account">Current Account:</string>
+    <string name="other_accounts">Other Accounts:</string>
+    <string name="add_pixelfed_account">Add Pixelfed account</string>
+    <string name="are_you_sure_you_want_to_remove_this_account">Are you sure you want to remove this Account</string>
+    <string name="remove_account">Remove Account?</string>
+    <string name="remove">Remove</string>
+    <string name="cancel">Cancel</string>
 </resources>

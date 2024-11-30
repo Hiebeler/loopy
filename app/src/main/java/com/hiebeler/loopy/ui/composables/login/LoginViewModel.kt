@@ -24,8 +24,8 @@ class LoginViewModel @Inject constructor(
 
     private val emailRegex: Regex = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))\$".toRegex()
 
-    var customUrl: String by mutableStateOf("loops.video")
-    var email: String by mutableStateOf("hiebeler.daniel@gmail.com")
+    var customUrl: String by mutableStateOf("")
+    var email: String by mutableStateOf("")
     var password: String by mutableStateOf("")
 
     var loginState by mutableStateOf(LoginState())

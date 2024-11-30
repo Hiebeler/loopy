@@ -9,9 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,9 +32,29 @@ import java.util.Locale
 
 @Composable
 fun CustomUser(user: Account, navController: NavController) {
+    CustomUserPrivate(
+        user, clickable = true, logoutButton = false, logout = {}, navController = navController
+    )
+}
+
+@Composable
+fun CustomUser(user: Account, logoutButton: Boolean = false, logout: () -> Unit = {}) {
+    CustomUserPrivate(user, clickable =  false, logoutButton = logoutButton, logout = logout, navController = null)
+}
+
+@Composable
+private fun CustomUserPrivate(
+    user: Account,
+    clickable: Boolean,
+    logoutButton: Boolean,
+    logout: () -> Unit,
+    navController: NavController?
+) {
     Row(modifier = Modifier
         .clickable {
-            Navigate.navigate("profile_screen/" + user.id, navController)
+            if (clickable) {
+                Navigate.navigate("profile_screen/" + user.id, navController!!)
+            }
         }
         .padding(horizontal = 12.dp, vertical = 8.dp)
         .fillMaxWidth(),
@@ -52,9 +71,7 @@ fun CustomUser(user: Account, navController: NavController) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = user.username,
-                    lineHeight = 8.sp,
-                    fontWeight = FontWeight.Bold
+                    text = user.username, lineHeight = 8.sp, fontWeight = FontWeight.Bold
                 )
 
                 Text(
@@ -64,6 +81,23 @@ fun CustomUser(user: Account, navController: NavController) {
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.primary,
                     lineHeight = 8.sp
+                )
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        if (logoutButton) {
+            Box(
+                modifier = Modifier
+                    .height(36.dp)
+                    .width(36.dp)
+                    .clickable { logout() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
                 )
             }
         }
