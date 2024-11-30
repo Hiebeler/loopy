@@ -97,15 +97,15 @@ fun ProfileComposable(
         viewModel.loadMorePosts()
     }
 
-    if (showShareSheet && viewModel.ownProfileState.data != null) {
+    if (showShareSheet) {
         ModalBottomSheet(
             onDismissRequest = {
                 showShareSheet = false
             }, sheetState = shareSheetState
         ) {
-            PreferencesComposable(viewModel.ownProfileState.data!!, navController)
+            PreferencesComposable(viewModel.ownProfileState.data, navController)
         }
-    } else if (showMultipleAccountsBottomSheet && viewModel.ownProfileState.data != null) {
+    } else if (showMultipleAccountsBottomSheet) {
         ModalBottomSheet(onDismissRequest = { showMultipleAccountsBottomSheet = false }) {
             AccountSwitchBottomSheet(closeBottomSheet = {
                 showMultipleAccountsBottomSheet = false

@@ -7,6 +7,7 @@ import com.hiebeler.loopy.data.remote.dto.FollowersWrapperDto
 import com.hiebeler.loopy.data.remote.dto.LoginModelDto
 import com.hiebeler.loopy.data.remote.dto.MetaAccountDto
 import com.hiebeler.loopy.data.remote.dto.NotificationsWrapperDto
+import com.hiebeler.loopy.data.remote.dto.PostDto
 import com.hiebeler.loopy.data.remote.dto.SearchWrapperDto
 import retrofit2.Call
 import retrofit2.http.GET
@@ -67,6 +68,16 @@ interface LoopsApi {
     fun login(
         @Query("email") email: String, @Query("password") password: String
     ): Call<LoginModelDto>
+
+    @POST("api/v0/like/video/{postid}")
+    fun likePost(
+        @Path("postid") postId: String
+    ): Call<PostDto>
+
+    @POST("api/v0/unlike/video/{postid}")
+    fun unlikePost(
+        @Path("postid") postId: String
+    ): Call<PostDto>
 
     @POST("api/v0.5/search/users")
     fun search(

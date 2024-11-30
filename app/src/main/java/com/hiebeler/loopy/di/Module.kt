@@ -9,11 +9,13 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.daniebeler.pfpixelix.di.HostSelectionInterceptorInterface
 import com.hiebeler.loopy.data.remote.LoopsApi
 import com.hiebeler.loopy.data.repository.AuthRepositoryImpl
+import com.hiebeler.loopy.data.repository.PostRepositoryImpl
 import com.hiebeler.loopy.data.repository.SearchRepositoryImpl
 import com.hiebeler.loopy.data.repository.TimelineRepositoryImpl
 import com.hiebeler.loopy.data.repository.UserRepositoryImpl
 import com.hiebeler.loopy.domain.model.AuthData
 import com.hiebeler.loopy.domain.repository.AuthRepository
+import com.hiebeler.loopy.domain.repository.PostRepository
 import com.hiebeler.loopy.domain.repository.SearchRepository
 import com.hiebeler.loopy.domain.repository.TimelineRepository
 import com.hiebeler.loopy.domain.repository.UserRepository
@@ -60,6 +62,12 @@ class Module {
     fun provideTimelineRepository(
         loopsApi: LoopsApi
     ): TimelineRepository = TimelineRepositoryImpl(loopsApi)
+
+    @Provides
+    @Singleton
+    fun providePostRepository(
+        loopsApi: LoopsApi
+    ): PostRepository = PostRepositoryImpl(loopsApi)
 
     @Provides
     @Singleton

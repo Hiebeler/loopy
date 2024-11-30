@@ -10,7 +10,6 @@ import com.hiebeler.loopy.domain.usecases.GetOwnUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfOwnUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetPostsOfUserUseCase
 import com.hiebeler.loopy.domain.usecases.GetUserUseCase
-import com.hiebeler.loopy.domain.usecases.SearchUseCase
 import com.hiebeler.loopy.domain.usecases.UnfollowUserUseCase
 import dagger.Module
 import dagger.Provides
