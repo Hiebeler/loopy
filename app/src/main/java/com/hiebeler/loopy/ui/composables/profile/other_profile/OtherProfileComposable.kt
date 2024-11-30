@@ -65,7 +65,6 @@ fun OtherProfileComposable(
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(windowInsets = WindowInsets(0, 0, 0, 0),
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
             title = {},
             navigationIcon = {
                 IconButton(onClick = {

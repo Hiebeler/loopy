@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,7 +28,8 @@ import com.hiebeler.loopy.domain.model.Post
 fun SmallPost(post: Post, modifier: Modifier) {
     Box(
         modifier = modifier
-            .aspectRatio(9f / 16f).background(MaterialTheme.colorScheme.surfaceContainer)
+            .aspectRatio(9f / 16f)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
     ) {
         AsyncImage(
             model = post.media.thumbnail,
@@ -34,7 +38,20 @@ fun SmallPost(post: Post, modifier: Modifier) {
             contentScale = ContentScale.Fit
         )
 
-        Row(Modifier.align(Alignment.BottomStart).padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.5f) // Semi-transparent black
+                        )
+                    )
+                )
+                .padding(6.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
             Icon(
                 imageVector = Icons.Rounded.Favorite,
                 contentDescription = "",
