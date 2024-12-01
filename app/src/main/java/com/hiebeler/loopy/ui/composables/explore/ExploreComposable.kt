@@ -120,8 +120,6 @@ fun ExploreComposable(navController: NavController, viewModel: ExploreViewModel 
                     viewModel.loadMoreSearchResults(textFieldState.text.toString())
                 }
             }
-        } else {
-            Text("trending")
         }
     }
 }
