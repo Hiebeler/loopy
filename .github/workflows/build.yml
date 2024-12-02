@@ -47,11 +47,9 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # Extract version name from build.gradle.kts file
-      - name: Extract Version Name
-        id: extract_version
+      - name: Get version
         run: |
-          version_name=$(grep -oP 'versionName\s+"(.*?)"' app/build.gradle.kts | sed -E 's/versionName "(.*)"/\1/')
-          echo "VERSION_NAME=$version_name" >> $GITHUB_ENV
+          echo "VERSION_NAME=${{steps.android_version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
 
       # Build APK without -P properties
       - name: Build APK
@@ -88,7 +86,7 @@ jobs:
       - name: Upload APK to GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: $GITHUB_WORKSPACE/*.apk
+          artifacts: ./*.apk
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
           name: "Release v${{ env.VERSION_NAME }}"
