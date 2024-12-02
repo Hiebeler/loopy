@@ -80,6 +80,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: release-apk
+          
+      - name: Verify downloaded artifact contents
+        run: ls -l ./release-apk
 
       # Upload release APK to GitHub
       - name: Upload APK to GitHub Release
