@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface PostRepository {
     fun likePost(postId: String): Flow<Resource<Post>>
     fun unlikePost(postId: String): Flow<Resource<Post>>
+    fun getPost(postId: String): Flow<Resource<Post>>
 //    fun reblogPost(postId: String): Flow<Resource<Post>>
 //    fun unreblogPost(postId: String): Flow<Resource<Post>>
 //    fun bookmarkPost(postId: String): Flow<Resource<Post>>

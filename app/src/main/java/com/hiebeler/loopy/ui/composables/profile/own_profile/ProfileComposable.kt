@@ -88,7 +88,7 @@ fun ProfileComposable(
                     }
                 }
 
-                PostsWrapperComposable(viewModel.postsState.feed)
+                PostsWrapperComposable(viewModel.postsState.feed, navController)
             }
         }
     }

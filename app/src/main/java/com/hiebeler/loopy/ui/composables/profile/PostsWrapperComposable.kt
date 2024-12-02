@@ -13,12 +13,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.hiebeler.loopy.domain.model.Post
 import com.hiebeler.loopy.domain.model.Wrapper
 import com.hiebeler.loopy.ui.composables.post.SmallPost
 
 fun LazyListScope.PostsWrapperComposable(
     feedWrapper: Wrapper<Post>?,
+    navController: NavController
 ) {
     if (feedWrapper != null) {
         val rows = feedWrapper.data.chunked(3)
@@ -59,7 +61,7 @@ fun LazyListScope.PostsWrapperComposable(
                     ) {
 
                         SmallPost(
-                            post = post, modifier = roundedCorners
+                            post = post, navController = navController, modifier = roundedCorners
                         )
                     }
                 }

@@ -35,6 +35,7 @@ import com.hiebeler.loopy.domain.usecases.GetCurrentLoginDataUseCase
 import com.hiebeler.loopy.ui.composables.explore.ExploreComposable
 import com.hiebeler.loopy.ui.composables.home.HomeComposable
 import com.hiebeler.loopy.ui.composables.inbox.InboxComposable
+import com.hiebeler.loopy.ui.composables.post.single_post_page.SinglePostComposable
 import com.hiebeler.loopy.ui.composables.profile.other_profile.OtherProfileComposable
 import com.hiebeler.loopy.ui.composables.profile.own_profile.ProfileComposable
 import com.hiebeler.loopy.ui.composables.settings.SettingsComposable
@@ -127,6 +128,13 @@ fun NavigationGraph(navController: NavHostController) {
                 OtherProfileComposable(navController, userId = id)
             }
         }
+
+        composable(Destinations.SinglePost.route) { navBackStackEntry ->
+            val uId = navBackStackEntry.arguments?.getString("id")
+            uId?.let { id ->
+                SinglePostComposable(postId = id, navController = navController)
+            }
+        }
     }
 }
 
@@ -162,7 +170,8 @@ fun BottomBar(navController: NavHostController) {
             },
                 selected = currentRoute == screen.route,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.inverseSurface, indicatorColor = Color.Transparent
+                    selectedIconColor = MaterialTheme.colorScheme.inverseSurface,
+                    indicatorColor = Color.Transparent
                 ),
                 onClick = {
                     Navigate.navigateWithPopUp(screen.route, navController)

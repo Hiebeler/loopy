@@ -1,6 +1,7 @@
 package com.hiebeler.loopy.ui.composables.post
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -21,16 +22,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.hiebeler.loopy.domain.model.Post
+import com.hiebeler.loopy.utils.Navigate
 
 @Composable
-fun SmallPost(post: Post, modifier: Modifier) {
-    Box(
-        modifier = modifier
-            .aspectRatio(9f / 16f)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-    ) {
+fun SmallPost(post: Post, navController: NavController, modifier: Modifier) {
+    Box(modifier = modifier
+        .aspectRatio(9f / 16f)
+        .background(MaterialTheme.colorScheme.surfaceContainer)
+        .clickable {
+            Navigate.navigate("single_post/" + post.id, navController)
+        }) {
         AsyncImage(
             model = post.media.thumbnail,
             contentDescription = "",

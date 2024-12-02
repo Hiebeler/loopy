@@ -1,6 +1,7 @@
 package com.hiebeler.loopy.di
 
 import com.hiebeler.loopy.domain.repository.PostRepository
+import com.hiebeler.loopy.domain.usecases.GetPostUseCase
 import com.hiebeler.loopy.domain.usecases.LikePostUseCase
 import com.hiebeler.loopy.domain.usecases.UnlikePostUseCase
 import dagger.Module
@@ -23,4 +24,10 @@ class PostModule {
     fun provideUnlikePostUseCase(
         repository: PostRepository
     ): UnlikePostUseCase = UnlikePostUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun getPostUseCase(
+        repository: PostRepository
+    ): GetPostUseCase = GetPostUseCase(repository)
 }

@@ -147,7 +147,7 @@ fun OtherProfileComposable(
                         }
                     }
                 }
-                PostsWrapperComposable(viewModel.postsState.feed)
+                PostsWrapperComposable(viewModel.postsState.feed, navController)
             }
         }
     }
