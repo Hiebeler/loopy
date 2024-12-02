@@ -25,6 +25,9 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE_64 }}" | base64 -d > app/keystore.jks
 
+      - name: Check Keystore File Location
+        run: ls -l app/
+
       # Cache Gradle dependencies
       - name: Cache Gradle Dependencies
         uses: actions/cache@v3
