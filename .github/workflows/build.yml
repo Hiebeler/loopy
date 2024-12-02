@@ -34,6 +34,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      # Extract version name from build.gradle file
+      - name: Extract Version Name
+        id: extract_version
+        run: |
+          version_name=$(grep -oP 'versionName\s+"(.*?)"' app/build.gradle | sed -E 's/versionName "(.*)"/\1/')
+          echo "VERSION_NAME=$version_name" >> $GITHUB_ENV
+
       # Build APK
       - name: Build APK
         run: ./gradlew assembleRelease -Pandroid.injected.signing.store.file=keystore.jks \
@@ -48,6 +55,6 @@ jobs:
           artifacts: app/build/outputs/apk/release/*.apk
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
-          release_name: "Release ${{ github.ref_name }}"
+          release_name: "Release v${{ env.VERSION_NAME }}"
           draft: false
           prerelease: false
