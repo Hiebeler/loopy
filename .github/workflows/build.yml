@@ -8,6 +8,12 @@ jobs:
     name: Build APK
     runs-on: ubuntu-latest
 
+    env:
+      # Set environment variables for signing at the job level
+      RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+      RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+
     steps:
       # Checkout the code
       - name: Checkout Code
