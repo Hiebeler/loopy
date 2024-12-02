@@ -21,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private val getForYouFeedUseCase: GetForYouFeedUseCase
 ) : ViewModel() {
 
-    var feedState by mutableStateOf(State<Wrapper<Post>>(Wrapper()))
+    var feedState by mutableStateOf(State<Wrapper<Post>>(Wrapper(), isLoading = true))
 
     init {
         getItemsFirstLoad(false)
@@ -51,41 +51,56 @@ class HomeViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     State(
-                        data = feedState.data, error = "", isLoading = true, isRefreshing = refreshing
+                        data = feedState.data,
+                        error = "",
+                        isLoading = true,
+                        isRefreshing = refreshing
                     )
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    fun loadMorePosts(nextCursor: String) {
-        getForYouFeedUseCase(maxPostId = nextCursor).onEach { result ->
-            feedState = when (result) {
-                is Resource.Success -> {
-                    State(
-                        data = Wrapper(
-                            data = feedState.data.data + result.data!!.data,
-                            previousCursor = result.data.previousCursor,
-                            nextCursor = result.data.nextCursor
-                        ), error = "", isLoading = false, isRefreshing = false
-                    )
-                }
+    fun activePostChanged(index: Int) {
+        if (!feedState.isLoading && index > feedState.data.data.size - 3) {
+            feedState.data.nextCursor?.let { loadMorePosts(it) }
+        }
+    }
 
-                is Resource.Error -> {
-                    State(
-                        data = feedState.data,
-                        error = result.message ?: "An unexpected error occurred",
-                        isLoading = false,
-                        isRefreshing = false
-                    )
-                }
+    private fun loadMorePosts(nextCursor: String) {
+        if (!feedState.isLoading) {
+            getForYouFeedUseCase(maxPostId = nextCursor).onEach { result ->
+                feedState = when (result) {
+                    is Resource.Success -> {
+                        State(
+                            data = Wrapper(
+                                data = feedState.data.data + result.data!!.data,
+                                previousCursor = result.data.previousCursor,
+                                nextCursor = result.data.nextCursor
+                            ), error = "", isLoading = false, isRefreshing = false
+                        )
+                    }
 
-                is Resource.Loading -> {
-                    State(
-                        data = feedState.data, error = "", isLoading = false, isRefreshing = false
-                    )
+                    is Resource.Error -> {
+                        State(
+                            data = feedState.data,
+                            error = result.message ?: "An unexpected error occurred",
+                            isLoading = false,
+                            isRefreshing = false
+                        )
+                    }
+
+                    is Resource.Loading -> {
+                        State(
+                            data = feedState.data,
+                            error = "",
+                            isLoading = true,
+                            isRefreshing = false
+                        )
+                    }
                 }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
+
     }
 }
