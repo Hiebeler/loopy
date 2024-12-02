@@ -3,6 +3,9 @@ name: Build and Release APK
 on:
   workflow_dispatch: # Trigger only when manually started
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build APK
