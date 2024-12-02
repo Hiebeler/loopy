@@ -38,7 +38,7 @@ jobs:
       - name: Extract Version Name
         id: extract_version
         run: |
-          version_name=$(grep -oP 'versionName\s+"(.*?)"' app/build.gradle | sed -E 's/versionName "(.*)"/\1/')
+          version_name=$(grep -oP 'versionName\s+"(.*?)"' app/build.gradle.kts | sed -E 's/versionName "(.*)"/\1/')
           echo "VERSION_NAME=$version_name" >> $GITHUB_ENV
 
       # Build APK
