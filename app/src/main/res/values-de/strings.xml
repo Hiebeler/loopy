@@ -4,10 +4,10 @@
     <string name="home">Home</string>
     <string name="profile">Profil</string>
     <string name="server_url">Server URL</string>
-    <string name="email">Email</string>
+    <string name="email">E-Mail</string>
     <string name="password">Passwort</string>
     <string name="i_don_t_have_an_account">Ich habe noch keinen Account</string>
-    <string name="inbox">Inbox</string>
+    <string name="inbox">Posteingang</string>
     <string name="followed_you">Folgt dir jetzt</string>
     <string name="commented_on_video">hat dein Video kommentiert</string>
     <string name="liked_your_post">gefällt dein Video</string>
@@ -15,11 +15,11 @@
     <string name="unfollow">entfolgen</string>
     <string name="explore">Entdecken</string>
     <string name="search">Suche</string>
-    <string name="followers">Followers</string>
+    <string name="followers">Abonnenten</string>
     <string name="following">Folge ich</string>
     <string name="logout">Ausloggen</string>
-    <string name="posts">Posts</string>
-    <string name="open_in_browser">Open in browser</string>
+    <string name="posts">Beiträge</string>
+    <string name="open_in_browser">Im Browser öffnen</string>
     <string name="current_account">Aktueller Account:</string>
     <string name="other_accounts">Andere Accounts:</string>
     <string name="add_pixelfed_account">Pixelfed Account hinzufügen</string>
