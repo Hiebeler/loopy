@@ -30,6 +30,10 @@ sealed class Destinations(
         route = "profile_screen/{userid}", icon = Icons.Outlined.Favorite, activeIcon = Icons.Filled.Favorite
     )
 
+    data object SinglePost : Destinations(
+        route = "single_post/{id}", icon = Icons.Outlined.Favorite, activeIcon = Icons.Filled.Favorite
+    )
+
     data object Inbox : Destinations(
         route = "inbox_screen", icon = Icons.Outlined.MailOutline, activeIcon = Icons.Filled.MailOutline
     )

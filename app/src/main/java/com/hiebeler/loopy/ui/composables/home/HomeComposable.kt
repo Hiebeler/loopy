@@ -37,7 +37,7 @@ fun HomeComposable(
                 viewModel.feedState.data,
                 viewModel.feedState.isLoading,
                 viewModel.feedState.error,
-                { cursor -> viewModel.loadMorePosts(cursor) },
+                { index -> viewModel.activePostChanged(index) },
                 navController
             )
         }

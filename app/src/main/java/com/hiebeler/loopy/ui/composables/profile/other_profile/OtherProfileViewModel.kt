@@ -1,4 +1,4 @@
-package com.hiebeler.loopy.ui.composables.own_profile
+package com.hiebeler.loopy.ui.composables.profile.other_profile
 
 
 import androidx.compose.runtime.getValue
@@ -48,7 +48,6 @@ class OtherProfileViewModel @Inject constructor(
             profileState = when (result) {
                 is Resource.Success -> {
                     State(data = result.data)
-
                 }
 
                 is Resource.Error -> {

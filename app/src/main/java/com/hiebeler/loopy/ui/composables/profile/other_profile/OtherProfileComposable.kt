@@ -27,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -44,7 +43,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hiebeler.loopy.R
 import com.hiebeler.loopy.ui.composables.InfiniteListHandler
-import com.hiebeler.loopy.ui.composables.own_profile.OtherProfileViewModel
 import com.hiebeler.loopy.ui.composables.profile.PostsWrapperComposable
 import com.hiebeler.loopy.ui.composables.profile.ProfileTopSection
 
@@ -65,7 +63,6 @@ fun OtherProfileComposable(
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(windowInsets = WindowInsets(0, 0, 0, 0),
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
             title = {},
             navigationIcon = {
                 IconButton(onClick = {
@@ -78,7 +75,7 @@ fun OtherProfileComposable(
             },
             actions = {
                 IconButton(onClick = {
-
+                    showShareSheet = true
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.MoreVert, contentDescription = ""
@@ -96,12 +93,11 @@ fun OtherProfileComposable(
                 .fillMaxSize()
         ) {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                state = lazyListState
+                verticalArrangement = Arrangement.spacedBy(4.dp), state = lazyListState
             ) {
                 item {
                     if (viewModel.profileState.data != null) {
-                        if (viewModel.profileState.isLoading) {
+                        if (viewModel.profileState.isLoading && !viewModel.profileState.isRefreshing) {
                             CircularProgressIndicator()
                         } else if (viewModel.profileState.data != null) {
                             Column {
@@ -151,7 +147,7 @@ fun OtherProfileComposable(
                         }
                     }
                 }
-                PostsWrapperComposable(viewModel.postsState.feed)
+                PostsWrapperComposable(viewModel.postsState.feed, navController)
             }
         }
     }

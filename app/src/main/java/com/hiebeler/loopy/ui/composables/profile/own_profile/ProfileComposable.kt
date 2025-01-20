@@ -80,7 +80,7 @@ fun ProfileComposable(
             ) {
                 item {
                     if (viewModel.ownProfileState.data != null) {
-                        if (viewModel.ownProfileState.isLoading) {
+                        if (viewModel.ownProfileState.isLoading && !viewModel.ownProfileState.isRefreshing) {
                             CircularProgressIndicator()
                         } else if (viewModel.ownProfileState.data != null) {
                             ProfileTopSection(viewModel.ownProfileState.data!!, navController)
@@ -88,7 +88,7 @@ fun ProfileComposable(
                     }
                 }
 
-                PostsWrapperComposable(viewModel.postsState.feed)
+                PostsWrapperComposable(viewModel.postsState.feed, navController)
             }
         }
     }

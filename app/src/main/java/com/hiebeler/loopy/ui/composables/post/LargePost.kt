@@ -3,21 +3,23 @@ package com.hiebeler.loopy.ui.composables.post
 import android.app.ActionBar.LayoutParams
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.ChatBubbleOutline
@@ -41,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -50,7 +53,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
@@ -82,7 +89,9 @@ fun LargePost(
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(_post.media.srcUrl))
             prepare()
+            repeatMode = Player.REPEAT_MODE_ONE
             playWhenReady = false
+
         }
     }
 
@@ -104,6 +113,35 @@ fun LargePost(
         }
     }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    if (active) {
+                        exoPlayer.playWhenReady = true
+                        exoPlayer.play()
+                    }
+                }
+
+                Lifecycle.Event.ON_STOP -> {
+                    exoPlayer.playWhenReady = false
+                    exoPlayer.pause()
+                }
+
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // Clean up observer when effect is disposed
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     var showHeart by remember { mutableStateOf(false) }
     val scale = animateFloatAsState(if (showHeart) 1f else 0f, label = "heart animation")
     LaunchedEffect(showHeart) {
@@ -115,14 +153,17 @@ fun LargePost(
 
     viewModel.post?.let { post: Post ->
 
-        Box(Modifier.aspectRatio(9f / 16f).pointerInput(Unit) {
-            detectTapGestures(onDoubleTap = {
-                CoroutineScope(Dispatchers.Default).launch {
-                    viewModel.likePost(post.id)
-                    showHeart = true
-                }
-            })
-        }) {
+        Box(
+            Modifier
+                .aspectRatio(9f / 16f)
+                .pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = {
+                        CoroutineScope(Dispatchers.Default).launch {
+                            viewModel.likePost(post.id)
+                            showHeart = true
+                        }
+                    })
+                }) {
             Icon(
                 imageVector = Icons.Filled.Favorite,
                 contentDescription = null,
@@ -155,14 +196,22 @@ fun LargePost(
 
             Row(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
                     .fillMaxWidth()
-                    .padding(18.dp)
+                    .align(Alignment.BottomCenter)
+                    .height(IntrinsicSize.Min)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent, Color.Black.copy(alpha = 0.5f)
+                            )
+                        )
+                    ).padding(16.dp), verticalAlignment = Alignment.Bottom
             ) {
                 Box(
-                    Modifier
+                    modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight()
+                        .wrapContentHeight()
+                        .align(Alignment.Bottom),
                 ) {
                     Column(Modifier.align(Alignment.BottomStart)) {
                         Row(verticalAlignment = Alignment.CenterVertically,
@@ -193,10 +242,7 @@ fun LargePost(
                 }
 
                 Box(
-                    Modifier
-                        .wrapContentWidth()
-                        .padding(12.dp)
-                        .fillMaxHeight()
+                    modifier = Modifier.wrapContentSize()
                 ) {
                     Column(
                         Modifier.align(Alignment.BottomEnd),
@@ -250,8 +296,6 @@ fun LargePost(
                         Spacer(Modifier.height(12.dp))
                     }
                 }
-
-
             }
 
 

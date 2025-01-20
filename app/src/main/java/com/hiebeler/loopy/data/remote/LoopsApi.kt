@@ -69,6 +69,11 @@ interface LoopsApi {
         @Query("email") email: String, @Query("password") password: String
     ): Call<LoginModelDto>
 
+    @GET("api/v0/video/id/{postid}")
+    fun getPost(
+        @Path("postid") postId: String
+    ): Call<PostDto>
+
     @POST("api/v0/like/video/{postid}")
     fun likePost(
         @Path("postid") postId: String

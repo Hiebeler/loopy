@@ -27,7 +27,7 @@ fun InfinitePosts(
     feedWrapper: Wrapper<Post>?,
     isLoading: Boolean,
     error: String,
-    loadMorePosts: (cursor: String) -> Unit,
+    activePostChanged: (index: Int) -> Unit,
     navController: NavController
 ) {
     when (view) {
@@ -36,11 +36,11 @@ fun InfinitePosts(
         }
 
         ViewEnum.Grid -> {
-            InfinitePostsGrid(feedWrapper, isLoading, error, loadMorePosts, navController)
+            InfinitePostsGrid(feedWrapper, isLoading, error, activePostChanged, navController)
         }
 
         ViewEnum.Timeline -> {
-            InfinitePostsTimeline(feedWrapper, isLoading, error, loadMorePosts, navController)
+            InfinitePostsTimeline(feedWrapper, isLoading, error, activePostChanged, navController)
         }
     }
 }
@@ -50,7 +50,7 @@ private fun InfinitePostsGrid(
     feedWrapper: Wrapper<Post>?,
     isLoading: Boolean,
     error: String,
-    loadMorePosts: (cursor: String) -> Unit,
+    loadMorePosts: (cursor: Int) -> Unit,
     navController: NavController
 ) {
     LazyVerticalGrid(
@@ -61,7 +61,7 @@ private fun InfinitePostsGrid(
     ) {
         if (feedWrapper != null) {
             items(feedWrapper.data) { post ->
-                SmallPost(post, Modifier)
+                SmallPost(post, navController, Modifier)
             }
         }
     }
@@ -72,7 +72,7 @@ private fun InfinitePostsTimeline(
     feedWrapper: Wrapper<Post>?,
     isLoading: Boolean,
     error: String,
-    loadMorePosts: (cursor: String) -> Unit,
+    activePostChanged: (index: Int) -> Unit,
     navController: NavController
 ) {
     val pagerState = rememberPagerState(pageCount = {
@@ -81,16 +81,14 @@ private fun InfinitePostsTimeline(
 
     Box(modifier = Modifier.fillMaxSize()) {
         VerticalPager(state = pagerState, beyondViewportPageCount = 1) { pageIndex: Int ->
-            if (isLoading || feedWrapper == null) {
+
+            LaunchedEffect(pageIndex) {
+                activePostChanged(pageIndex)
+            }
+
+            if (feedWrapper == null || (feedWrapper.data.isEmpty() && isLoading)) {
                 CircularProgressIndicator()
             } else {
-                if (pageIndex >= feedWrapper.data.size - 2 && feedWrapper.data.isNotEmpty() && feedWrapper.nextCursor != null) {
-                    LaunchedEffect(pageIndex) {
-                        feedWrapper.nextCursor.let {
-                            loadMorePosts(it)
-                        }
-                    }
-                }
                 var item: Post? = null
                 if (pageIndex < feedWrapper.data.size) {
                     item = feedWrapper.data[pageIndex]

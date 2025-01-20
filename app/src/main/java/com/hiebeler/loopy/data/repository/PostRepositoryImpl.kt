@@ -21,4 +21,8 @@ class PostRepositoryImpl @Inject constructor(
     override fun unlikePost(postId: String): Flow<Resource<Post>> {
         return NetworkCall<Post, PostDto>().makeCall(pixelfedApi.unlikePost(postId))
     }
+
+    override fun getPost(postId: String): Flow<Resource<Post>> {
+        return NetworkCall<Post, PostDto>().makeCall(pixelfedApi.getPost(postId))
+    }
 }
